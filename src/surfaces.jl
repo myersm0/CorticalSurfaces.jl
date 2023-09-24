@@ -2,7 +2,7 @@
 using Cifti2
 
 export Hemisphere, CorticalSurface
-export size, getindex, append!, coordinates, vertices, remap
+export size, getindex, append!, coordinates, vertices, remap, expand, collapse
 
 struct SpatialData{T <: DataStyle} 
 	data::Any
@@ -125,6 +125,12 @@ remap(
 		inds::Vector; surf::Union{Hemisphere, CorticalSurface}, dir::Pair{I1, I2}
 	) where {I1, I2} =
 	return filter(x -> x != 0, surf.remap[dir][inds])
+
+expand(inds::Union{UnitRange, Vector}; surf::Union{Hemisphere, CorticalSurface})
+	return surf.remap[ExpandMW][inds]
+
+collapse(inds::Union{UnitRange, Vector}; surf::Union{Hemisphere, CorticalSurface})
+	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
 
 check_conformity(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
 

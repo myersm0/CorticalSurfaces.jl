@@ -67,13 +67,13 @@ c[R][:distance_matrix][50000:51000, 42001:42009]
 
 Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface object to which it is "appended," inclusive of medial wall vertices.
 
-To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `remap` is provided along with a pair of constants `CollapseMW` and `ExpandMW` that specify the intended direction of the index re-mapping. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive and inclusive of medial wall, respectively):
+To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `collapse` is provided, as well as `expand` to handle the opposite case. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive and inclusive of medial wall, respectively):
 ```
 verts = rand(1:32492, 100) # generate some random vertex numbers from [1, 32492]
-remap(verts; surf = c, dir = CollapseMW) # result will be indices in the range [1, 29696]
+collapse(verts; surf = c)  # result will be indices in the range [1, 29696]
 
 verts = rand(1:29696, 100) # generate some random vertex numbers from [1, 29696]
-remap(verts; surf = c, dir = ExpandMW)   # result will be indices in the range [1, 32492]
+expand(verts; surf = c)    # result will be indices in the range [1, 32492]
 ```
 Note that in the former case, the vector returned might be shorter than the length of the input vector, because we're mapping from a larger range down to a smaller one; any of the inputs that belong to the medial wall will necessarily be omitted.
 
