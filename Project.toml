@@ -1,0 +1,13 @@
+name = "CorticalSurfaces"
+uuid = "db9f6742-bc38-4697-955a-0a5dbec8c5c6"
+authors = ["Michael Myers"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
