@@ -2,7 +2,7 @@
 using Cifti2
 
 export Hemisphere, CorticalSurface
-export size, getindex, append!, coordinates, vertices
+export size, getindex, append!, coordinates, vertices, remap
 
 struct SpatialData{T <: DataStyle} 
 	data::Any
