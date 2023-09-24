@@ -1,5 +1,9 @@
+
 module CorticalSurfaces
 
-# Write your package code here.
+include("traits.jl")
+include("surfaces.jl")
 
 end
+
+

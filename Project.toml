@@ -3,6 +3,10 @@ uuid = "db9f6742-bc38-4697-955a-0a5dbec8c5c6"
 authors = ["Michael Myers"]
 version = "1.0.0-DEV"
 
+[deps]
+Cifti2 = "0be6487c-ad5f-4404-8819-18142bc53a2c"
+JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
+
 [compat]
 julia = "1"
 
