@@ -35,7 +35,7 @@ DataStyle(v::AbstractVector) = ListStyle(v)
 DataStyle(m::AbstractMatrix) = MatrixStyle(m)
 
 ListStyle(v::AbstractVector) = isbitstype(eltype(v)) ? IsScalarList() : IsNestedList()
-MatrixStyle(m::AbstractMatrix) = allequal(size(m)) ? IsSquare() : IsRectangular()
+MatrixStyle(m::AbstractMatrix) = size(m, 1) == size(m, 2) ? IsSquare() : IsRectangular()
 
 
 
