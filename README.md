@@ -3,6 +3,8 @@ In working with spatial coordinates and related information in surface-space ana
 
 This package provides an interface for improving safety and readability of managing such operations and for encapsulating spatial properties pertaining to a surface representation(s) of the cortex, including arbitrary user-supplied data such as distance matrices and adjacency info. It was designed with CIFTI/GIFTI files in mind and the so-called fs_LR 32k coordinate space, though it could work in other contexts too.
 
+This package supplies the backbone for a set of spatial algorithms for operating on [parcels](https://github.com/myersm0/Myers-Labonte_parcellation) on the cortical surface, [ParcelOps.jl](https://github.com/myersm0/ParcelOps.jl), currently under development.
+
 An additional goal, not yet implemented, is to provide some GLMakie recipes for 3d visualization of brain surfaces, inspired by [Connectome Workbench](https://humanconnectome.org/software/connectome-workbench)'s wb_view but with a programmatic interface and the ability to add arbitrary graphical elements (such as text annotations).
 
 ## Performance and efficiency
@@ -11,7 +13,7 @@ The implementation priorities are, in order:
 2. Speed of *indexing* into the spatial data (rather than of struct initialization)
 3. Convenience, readability in usage of this API
 
-Where each item is assumed to be far more important than the previous. Since in-memory storage cost of structural data such as this is assumed to be negligble, redundant representations of some data are present in order to speed up indexing.
+Where each item is assumed to be far more important than the previous. Since in-memory storage cost of structural data such as this should be negligble, redundant representations of some data are present in order to speed up indexing.
 
 ## Usage
 To create a Hemisphere object that will encapsulate spatial information, two pieces of information are required: 
