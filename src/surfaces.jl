@@ -91,37 +91,47 @@ end
 
 Base.getindex(c::CorticalSurface, h::BrainStructure) =
 	return haskey(c.hems, h) ? c.hems[h] : nothing
+
 Base.getindex(hem::Hemisphere, s::Symbol) =
 	return haskey(hem.appendix, s) ? hem.appendix[s].data : nothing
 
 Base.getindex(x::SpatialData, args...) =
 	return getindex(x.data, args...)
 
+"Get the number of vertices, `Exclusive()` or `Inclusive()` of medial wall"
 Base.size(hem::Hemisphere, mw::MedialWallIndexing) = hem.size[mw]
 Base.size(hem::Hemisphere) = size(hem, Inclusive())
 Base.size(c::CorticalSurface, args...) = size(c[L], args...) + size(c[R], args...)
 
+"Get coordinates from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
 coordinates(hem::Hemisphere, mw::MedialWallIndexing) = hem.coordinates[mw]
 coordinates(hem::Hemisphere) = coordinates(hem, Inclusive())
+
+"Get coordinates from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
 coordinates(c::CorticalSurface, args...) = 
 	vcat([coordinates(c[hem], args...) for hem in LR]...)
 coordinates(v::Vector{Hemisphere}, args...) = 
 	vcat([coordinates(h, args...) for h in v]...)
 
+"Get vertex numbers from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
 vertices(hem::Hemisphere) = hem.vertices[(Ipsilateral(), Inclusive())]
 vertices(hem::Hemisphere, args...) = hem.vertices[args...]
 
+"Get vertex numbers from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
 vertices(c::CorticalSurface) = c.vertices[Inclusive()]
 vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
 
+"Map a set of `Exclusive()` vertex indices to an expanded (`Inclusive()`) range"
 expand(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 	return surf.remap[ExpandMW][inds]
 
+"Map a set of `Inclusive()` vertex indices to a collapsed (`Exclusive()`) range"
 collapse(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
 	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
 
 check_size(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
 
+"Add a spatial data representation to a `Hemisphere`"
 Base.append!(hem::Hemisphere, k::Symbol, x::AbstractArray) = 
 	check_size(hem, x) ? 
 		hem.appendix[k] = SpatialData(x) : 
