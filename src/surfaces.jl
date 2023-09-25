@@ -126,10 +126,10 @@ remap(
 	) where {I1, I2} =
 	return filter(x -> x != 0, surf.remap[dir][inds])
 
-expand(inds::Union{UnitRange, Vector}; surf::Union{Hemisphere, CorticalSurface})
+expand(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
 	return surf.remap[ExpandMW][inds]
 
-collapse(inds::Union{UnitRange, Vector}; surf::Union{Hemisphere, CorticalSurface})
+collapse(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
 	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
 
 check_conformity(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
