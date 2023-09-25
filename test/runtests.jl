@@ -1,17 +1,17 @@
 using CorticalSurfaces
-using Cifti2
+using CIFTI
 using Test
 using JLD
 
 data_dir = joinpath(dirname(@__FILE__), "../", "data")
 
 # load Conte69 midthickness files and generate some ground truth info
-conte_file = joinpath(data_dir, "conte69.32k_fs_LR.jld")
+conte_file = joinpath(data_dir, "test_data.jld")
 conte = load(conte_file)
-surfL = conte["pointsets"]["midthickness"][Cifti2.L]
-surfR = conte["pointsets"]["midthickness"][Cifti2.R]
-mwL = conte["medial wall"][Cifti2.L]
-mwR = conte["medial wall"][Cifti2.R]
+surfL = conte["pointset"][L]
+surfR = conte["pointset"][R]
+mwL = conte["medial wall"][L]
+mwR = conte["medial wall"][R]
 neighbors = conte["adjacency list"]
 surf_vertices_L = findall(.!mwL)
 surf_vertices_R = findall(.!mwR)
