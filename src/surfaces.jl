@@ -126,7 +126,7 @@ expand(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 	return surf.remap[ExpandMW][inds]
 
 "Map a set of `Inclusive()` vertex indices to a collapsed (`Exclusive()`) range"
-collapse(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
+collapse(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
 
 check_size(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
