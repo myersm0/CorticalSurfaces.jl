@@ -16,6 +16,7 @@ The implementation priorities are, in order:
 Where each item is assumed to be far more important than the previous. Since in-memory storage cost of structural data such as this should be negligble, redundant representations of some data are present in order to speed up indexing.
 
 ## Usage
+### Constructors
 To create a Hemisphere object that will encapsulate spatial information, two pieces of information are required: 
 - a numeric `Matrix` of coordinates having 3 columns (x, y, z)
 - a `BitVector` or `Vector{Bool}`, the length of which is equal to the number of rows in the coordinate `Matrix`, indicating the presence of the medial wall (`true` if the vertex is part of the medial wall, `false` otherwise)
@@ -35,6 +36,7 @@ And now to construct a CorticalSurface object from the above:
 c = CorticalSurface(hemL, hemR)
 ```
 
+### Basic accessors for coordinates, vertex indices, and size
 The following are some of the operations currently supported:
 ```
 # get coordinates from both hemispheres combined
@@ -54,7 +56,10 @@ vertices(c[R], Bilateral(), Inclusive())
 
 size(c, Inclusive())    # number of total vertices in both hemispheres
 size(c[L], Inclusive()) # number of vertices in just the left hemisphere
+```
 
+### Supplementary data
+```
 # create a "distance matrix" for the right hemisphere
 nverts = size(c[R], Inclusive())
 nonsensical_distance_matrix = rand(UInt8, nverts, nverts)
@@ -65,9 +70,9 @@ append!(c[R], :distance_matrix, nonsensical_distance_matrix)
 # index into the distance matrix
 c[R][:distance_matrix][50000:51000, 42001:42009]
 ```
-
 Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface object to which it is "appended." (A current limitation is that these spatial data objects must having indexing *inclusive* of medial wall vertices, but I aim to remove this limitation in a future version.)
 
+### `collapse` and `expand` functions to remove, or add, presense of medial wall
 To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `collapse` is provided, as well as `expand` to handle the opposite case. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive and inclusive of medial wall, respectively):
 ```
 verts = rand(1:32492, 100) # generate some random vertex numbers from [1, 32492]
