@@ -77,13 +77,13 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 		)
 	)
 	remap = Dict(
-		(Inclusive() => Exclusive()) => [
-			lhem.remap[(Inclusive() => Exclusive())];
-			rhem.remap[(Inclusive() => Exclusive())] .+ size(lhem, Exclusive())
+		CollapseMW => [
+			lhem.remap[CollapseMW];
+			rhem.remap[CollapseMW] .+ size(lhem, Exclusive())
 		],
-		(Exclusive() => Inclusive()) => [
-			lhem.remap[(Exclusive() => Inclusive())];
-			rhem.remap[(Exclusive() => Inclusive())] .+ size(lhem, Inclusive())
+		ExpandMW => [
+			lhem.remap[ExpandMW];
+			rhem.remap[ExpandMW] .+ size(lhem, Inclusive())
 		],
 	)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
@@ -114,16 +114,16 @@ vertices(hem::Hemisphere, args...) = hem.vertices[args...]
 vertices(c::CorticalSurface) = c.vertices[Inclusive()]
 vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
 
-expand(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
+expand(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 	return surf.remap[ExpandMW][inds]
 
 collapse(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
 	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
 
-check_conformity(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
+check_size(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
 
 Base.append!(hem::Hemisphere, k::Symbol, x::AbstractArray) = 
-	check_conformity(hem, x) ? 
+	check_size(hem, x) ? 
 		hem.appendix[k] = SpatialData(x) : 
 		error(DimensionMismatch)
 

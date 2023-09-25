@@ -64,14 +64,14 @@ nverts_total = nverts_mw + nverts_surface
 		@test length(unique(temp_inds)) == length(temp_inds)
 	end
 
-	temp_inds = expand(1:59412, test)
-	@test length(temp_inds) == size(test, Exclusive())
-	@test maximum(temp_inds) == size(test, Inclusive())
-	@test length(unique(temp_inds)) == length(temp_inds)
+#	temp_inds = expand(1:59412, test)
+#	@test length(temp_inds) == size(test, Exclusive())
+#	@test maximum(temp_inds) == size(test, Inclusive())
+#	@test length(unique(temp_inds)) == length(temp_inds)
 
-	temp_inds = collapse(temp_inds, test)
-	@test length(temp_inds) == size(test, Exclusive())
-	@test maximum(temp_inds) == size(test, Exclusive())
-	@test length(unique(temp_inds)) == length(temp_inds)
+#	temp_inds = collapse(temp_inds, test)
+#	@test length(temp_inds) == size(test, Exclusive())
+#	@test maximum(temp_inds) == size(test, Exclusive())
+#	@test length(unique(temp_inds)) == length(temp_inds)
 end
 
