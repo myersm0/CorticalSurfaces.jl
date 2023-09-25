@@ -12,6 +12,7 @@ surfL = conte["pointsets"]["midthickness"][Cifti2.L]
 surfR = conte["pointsets"]["midthickness"][Cifti2.R]
 mwL = conte["medial wall"][Cifti2.L]
 mwR = conte["medial wall"][Cifti2.R]
+neighbors = conte["adjacency list"]
 surf_vertices_L = findall(.!mwL)
 surf_vertices_R = findall(.!mwR)
 surf_vertices_LR = [surf_vertices_L; maximum(surf_vertices_L) .+ surf_vertices_R]
@@ -41,5 +42,36 @@ nverts_total = nverts_mw + nverts_surface
 		append!(test[hem], :vertexlist, 1:nverts)
 		@test test[hem][:vertexlist] == 1:nverts
 	end
+
+	append!(test[L], :neighbors, neighbors)
+	a = vertices(test[L], (Ipsilateral(), Exclusive()))
+	test_vert = 22878
+	inds = test[L][:neighbors][test_vert]
+	temp_inds = collapse(inds, test[L])
+	@test length(temp_inds) == 6
+	@test all(x in [21076, 21053, 21054, 21078, 21100, 21099] for x in temp_inds)
+	@test expand(collapse(inds, test[L]), test[L]) == inds
+
+	for hem in [L, R]
+		temp_inds = collapse(1:32492, test[L])
+		@test length(temp_inds) == size(test[L], Exclusive())
+		@test maximum(temp_inds) == size(test[L], Exclusive())
+		@test length(unique(temp_inds)) == length(temp_inds)
+
+		temp_inds = expand(temp_inds, test[L])
+		@test length(temp_inds) == size(test[L], Exclusive())
+		@test maximum(temp_inds) == size(test[L], Inclusive())
+		@test length(unique(temp_inds)) == length(temp_inds)
+	end
+
+	temp_inds = expand(1:59412, test)
+	@test length(temp_inds) == size(test, Exclusive())
+	@test maximum(temp_inds) == size(test, Inclusive())
+	@test length(unique(temp_inds)) == length(temp_inds)
+
+	temp_inds = collapse(temp_inds, test)
+	@test length(temp_inds) == size(test, Exclusive())
+	@test maximum(temp_inds) == size(test, Exclusive())
+	@test length(unique(temp_inds)) == length(temp_inds)
 end
 
