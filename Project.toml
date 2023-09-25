@@ -1,14 +1,14 @@
 name = "CorticalSurfaces"
 uuid = "db9f6742-bc38-4697-955a-0a5dbec8c5c6"
 authors = ["Michael Myers"]
-version = "1.0.0-DEV"
+version = "0.1.0"
 
 [deps]
-Cifti2 = "0be6487c-ad5f-4404-8819-18142bc53a2c"
+CIFTI = "8026ff91-9e86-4f19-bd27-c139e9e8bf7a"
 JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
 
 [compat]
-Cifti2 = "0.1.0"
+CIFTI = "1.0.0"
 JLD = "0.13"
 julia = "1.6.7"
 

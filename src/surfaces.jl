@@ -1,5 +1,5 @@
 
-using Cifti2
+using CIFTI
 
 export Hemisphere, CorticalSurface
 export size, getindex, append!, coordinates, vertices, remap, expand, collapse
