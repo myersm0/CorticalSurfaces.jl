@@ -138,10 +138,7 @@ Base.append!(hem::Hemisphere, k::Symbol, x::AbstractArray) =
 		error(DimensionMismatch)
 
 function Base.show(io::IO, ::MIME"text/plain", h::Hemisphere)
-	print(
-		"Hemisphere with $(size(h)) vertices \
-		($(size(h, Exclusive())) without medial wall)"
-	)
+	print("Hemisphere with $(size(h)) vertices ($(size(h, Exclusive())) without medial wall)")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", c::CorticalSurface)
