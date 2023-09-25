@@ -114,18 +114,6 @@ vertices(hem::Hemisphere, args...) = hem.vertices[args...]
 vertices(c::CorticalSurface) = c.vertices[Inclusive()]
 vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
 
-remap(h::Hemisphere, inds::Vector, p::Pair{I1, I2}) where {I1, I2} =
-	return filter(x -> x != 0, h.remap[p][inds])
-
-remap(c::CorticalSurface, inds::Vector, p::Pair{I1, I2}) where {I1, I2} =
-	return filter(x -> x != 0, c.remap[p][inds])
-
-# TODO: why is this slow? (195 ns versus 70 ns above)
-remap(
-		inds::Vector; surf::Union{Hemisphere, CorticalSurface}, dir::Pair{I1, I2}
-	) where {I1, I2} =
-	return filter(x -> x != 0, surf.remap[dir][inds])
-
 expand(inds::Union{UnitRange, Vector}, surf::Union{Hemisphere, CorticalSurface}) =
 	return surf.remap[ExpandMW][inds]
 
