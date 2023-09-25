@@ -11,7 +11,7 @@ end
 SpatialData(x::T) where T <: AbstractArray = SpatialData(DataStyle(x), x)
 SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
 
-@kwdef struct Hemisphere
+Base.@kwdef struct Hemisphere
 	coordinates::Dict{MedialWallIndexing, Matrix{Float64}}
 	medial_wall::Union{BitVector, Vector{Bool}}
 	vertices::Dict{IndexMapping, Vector}
