@@ -15,6 +15,13 @@ The implementation priorities are, in order:
 
 Where each item is assumed to be far more important than the previous. Since in-memory storage cost of structural data such as this should be negligble, redundant representations of some data are present in order to speed up indexing.
 
+## Installation
+With Julia:
+```
+using Pkg
+Pkg.add(url = "http://github.com/myersm0/CorticalSurfaces.jl")
+```
+
 ## Usage
 ### Constructors
 To create a Hemisphere object that will encapsulate spatial information, two pieces of information are required: 
