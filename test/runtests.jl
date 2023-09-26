@@ -53,19 +53,19 @@ nverts_total = nverts_mw + nverts_surface
 	@test expand(collapse(inds, test[L]), test[L]) == inds
 
 	for hem in [L, R]
-		temp_inds = collapse(1:32492, test[L])
-		@test length(temp_inds) == size(test[L], Exclusive())
-		@test maximum(temp_inds) == size(test[L], Exclusive())
+		temp_inds = collapse(1:32492, test[hem])
+		@test length(temp_inds) == size(test[hem], Exclusive())
+		@test maximum(temp_inds) == size(test[hem], Exclusive())
 		@test length(unique(temp_inds)) == length(temp_inds)
 
-		temp_inds = expand(temp_inds, test[L])
-		@test length(temp_inds) == size(test[L], Exclusive())
-		@test maximum(temp_inds) == size(test[L], Inclusive())
+		temp_inds = expand(temp_inds, test[hem])
+		@test length(temp_inds) == size(test[hem], Exclusive())
+		@test maximum(temp_inds) == size(test[hem], Inclusive())
 		@test length(unique(temp_inds)) == length(temp_inds)
 
-		sample_data = collect(1:size(test[L], Exclusive()))
-		padded_data = pad(sample_data, test[L])
-		trimmed_padded_data = trim(padded_data, test[L])
+		sample_data = collect(1:size(test[hem], Exclusive()))
+		padded_data = pad(sample_data, test[hem])
+		trimmed_padded_data = trim(padded_data, test[hem])
 		@test trimmed_padded_data == sample_data
 	end
 
