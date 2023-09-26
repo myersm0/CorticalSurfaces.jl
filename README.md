@@ -24,7 +24,7 @@ Pkg.add(url = "http://github.com/myersm0/CorticalSurfaces.jl")
 
 ## Usage
 ### Constructors
-To create a Hemisphere object that will encapsulate spatial information, two pieces of information are required: 
+To create a Hemisphere struct that will encapsulate spatial information, two pieces of information are required: 
 - a numeric `Matrix` of coordinates having 3 columns (x, y, z)
 - a `BitVector` or `Vector{Bool}`, the length of which is equal to the number of rows in the coordinate `Matrix`, indicating the presence of the medial wall (`true` if the vertex is part of the medial wall, `false` otherwise)
 
@@ -38,7 +38,7 @@ mw = rand(Bool, nverts)
 hemR = Hemisphere(surf, mw)
 ```
 
-And now to construct a CorticalSurface object from the above:
+And now to construct a CorticalSurface struct from the above:
 ```
 c = CorticalSurface(hemL, hemR)
 ```
@@ -51,8 +51,8 @@ coordinates(c, Exclusive()) # not including medial wall vertices
 coordinates(c, Inclusive()) # including medial wall vertices
 
 # get coordinates from just the right hemisphere
-coordinates(c[R], Exclusive()) # including medial wall vertices
-coordinates(c[R], Inclusive()) # not including medial wall vertices
+coordinates(c[R], Exclusive()) # not including medial wall vertices
+coordinates(c[R], Inclusive()) # including medial wall vertices
 
 # as above, but don't get the coordinates, just get a vector of vertex indices
 vertices(c[R], Inclusive())
@@ -77,7 +77,7 @@ append!(c[R], :distance_matrix, nonsensical_distance_matrix)
 # index into the distance matrix
 c[R][:distance_matrix][50000:51000, 42001:42009]
 ```
-Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface object to which it is "appended." (A current limitation is that these spatial data objects must having indexing *inclusive* of medial wall vertices, but I aim to remove this limitation in a future version.)
+Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface struct to which it is "appended." (A current limitation is that these spatial data items must having indexing *inclusive* of medial wall vertices, but I aim to remove this limitation in a future version.)
 
 ### Functions to adjust for presense or absense of medial wall
 To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `collapse` is provided, as well as `expand` to handle the opposite case. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive or inclusive of medial wall, respectively):
@@ -90,7 +90,7 @@ new_verts = expand(verts, c)    # result will be indices in the range [1, 32492]
 ```
 Note that in the former case, the vector returned might be shorter than the length of the input vector, because we're mapping from a larger range down to a smaller one; any of the inputs that belong to the medial wall will necessarily be omitted.
 
-Another pair of functions `pad` and `trim` perform a similar role but with a key difference: the input vector is a set of numbers, the values of which you *don't* want to change; instead, you want to grow its length by padding it with zeros wherever there's medial wall, or shrink it by trimming out elements that fall on the medial wall. The numbers could be some functional or statistical data, for example. (For these operations to make sense, the size of the input vector must be equal to `size(surf, Exclusive())` in the `pad` case, or `size(surf, Inclusive())` in the `trim` case.)
+Another pair of functions `pad` and `trim` perform a similar role but with a key difference: the input vector is a set of numbers, the values of which you *don't* want to change; instead, you want to grow its length by padding it with zeros wherever there's medial wall, or shrink it by trimming out elements that coincide with the medial wall. The numbers could be some functional or statistical data, for example. (For these operations to make sense, the size of the input vector must be equal to `size(surf, Exclusive())` in the `pad` case, or `size(surf, Inclusive())` in the `trim` case.)
 ```
 functional_data = randn(size(c[L], Exclusive()))
 padded_data = pad(functional_data, c[L])
