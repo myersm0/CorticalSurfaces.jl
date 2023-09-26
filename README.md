@@ -43,7 +43,7 @@ And now to construct a CorticalSurface object from the above:
 c = CorticalSurface(hemL, hemR)
 ```
 
-### Basic accessors for coordinates, vertex indices, and size
+### Accessors
 The following are some of the operations currently supported:
 ```
 # get coordinates from both hemispheres combined
