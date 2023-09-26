@@ -96,7 +96,7 @@ functional_data = randn(size(c[L], Exclusive()))
 padded_data = pad(functional_data, c[L])
 
 # trimming the value returned above should get you back to the original functional data
-trimmed_data = trim(functional_data, c[L])
+trimmed_data = trim(padded_data, c[L])
 ```
 
 [![Build Status](https://github.com/myersm0/CorticalSurfaces.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/myersm0/CorticalSurfaces.jl/actions/workflows/CI.yml?query=branch%3Amain)
