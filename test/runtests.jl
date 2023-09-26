@@ -3,7 +3,7 @@ using CIFTI
 using Test
 using JLD
 
-data_dir = joinpath(dirname(@__FILE__), "../", "data")
+data_dir = joinpath(dirname(@__FILE__), "..", "data")
 
 # load Conte69 midthickness files and generate some ground truth info
 conte_file = joinpath(data_dir, "test_data.jld")
@@ -69,14 +69,24 @@ nverts_total = nverts_mw + nverts_surface
 		@test trimmed_padded_data == sample_data
 	end
 
-#	temp_inds = expand(1:59412, test)
-#	@test length(temp_inds) == size(test, Exclusive())
-#	@test maximum(temp_inds) == size(test, Inclusive())
-#	@test length(unique(temp_inds)) == length(temp_inds)
+	temp_inds = expand(1:59412, test)
+	@test length(temp_inds) == size(test, Exclusive())
+	@test maximum(temp_inds) == size(test, Inclusive())
+	@test length(unique(temp_inds)) == length(temp_inds)
 
-#	temp_inds = collapse(temp_inds, test)
-#	@test length(temp_inds) == size(test, Exclusive())
-#	@test maximum(temp_inds) == size(test, Exclusive())
-#	@test length(unique(temp_inds)) == length(temp_inds)
+	temp_inds = collapse(temp_inds, test)
+	@test length(temp_inds) == size(test, Exclusive())
+	@test maximum(temp_inds) == size(test, Exclusive())
+	@test length(unique(temp_inds)) == length(temp_inds)
+
+	temp_inds = pad(1:59412, test)
+	@test length(temp_inds) == size(test)
+	@test sum(temp_inds .== 0) == sum(test[L].medial_wall + test[R].medial_wall)
+	@test setdiff(temp_inds, 0) == 1:59412
+
+	temp_inds = trim(1:64984, test)
+	@test length(temp_inds) == size(test, Exclusive())
+	@test all([test[L].medial_wall; test[R].medial_wall][temp_inds] .== 0)
+	@test !any([test[L].medial_wall; test[R].medial_wall][temp_inds] .== 1)
 end
 
