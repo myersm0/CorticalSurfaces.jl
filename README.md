@@ -3,7 +3,7 @@ In working with spatial coordinates and related information in surface-space ana
 
 This package provides an interface for improving safety and readability of managing such operations and for encapsulating spatial properties pertaining to a surface representation(s) of the cortex, including arbitrary user-supplied data such as distance matrices and adjacency info. It was designed with CIFTI/GIFTI files in mind and the so-called fs_LR 32k coordinate space, though it could work in other contexts too.
 
-This package supplies the backbone for a set of spatial algorithms for operating on [parcels](https://github.com/myersm0/Myers-Labonte_parcellation) on the cortical surface, tentatively called [ParcelOps.jl](https://github.com/myersm0/ParcelOps.jl), still under development.
+This package supplies the backbone for a set of algorithms for operating on [parcels](https://github.com/myersm0/Myers-Labonte_parcellation) on the cortical surface, tentatively called [ParcelOps.jl](https://github.com/myersm0/ParcelOps.jl), still under development.
 
 An additional goal, not yet implemented, is to provide some GLMakie recipes for 3d visualization of brain surfaces, inspired by [Connectome Workbench](https://humanconnectome.org/software/connectome-workbench)'s wb_view but with a programmatic interface and the ability to add arbitrary graphical elements (such as text annotations).
 
@@ -65,7 +65,7 @@ size(c, Inclusive())    # number of total vertices in both hemispheres
 size(c[L], Inclusive()) # number of vertices in just the left hemisphere
 ```
 
-### Supplementary data
+### Supplementary spatial data
 ```
 # create a "distance matrix" for the right hemisphere
 nverts = size(c[R], Inclusive())
@@ -80,7 +80,7 @@ c[R][:distance_matrix][50000:51000, 42001:42009]
 Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface object to which it is "appended." (A current limitation is that these spatial data objects must having indexing *inclusive* of medial wall vertices, but I aim to remove this limitation in a future version.)
 
 ### Functions to adjust vertex indices for presense or absense of medial wall
-To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `collapse` is provided, as well as `expand` to handle the opposite case. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive and inclusive of medial wall, respectively):
+To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `collapse` is provided, as well as `expand` to handle the opposite case. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive or inclusive of medial wall, respectively):
 ```
 verts = rand(1:32492, 100)      # generate some random vertex numbers in the range [1, 32492]
 new_verts = collapse(verts, c)  # result will be indices in the range [1, 29696]
