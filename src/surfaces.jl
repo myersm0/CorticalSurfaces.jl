@@ -1,7 +1,7 @@
 
 using CIFTI
 
-export Hemisphere, CorticalSurface
+export Hemisphere, CorticalSurface, SurfaceSpace
 export size, getindex, append!, coordinates, vertices, remap, expand, collapse
 
 struct SpatialData{T <: DataStyle} 
@@ -88,6 +88,9 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
 end
+
+# define a shorthand for convenience in other packages; not used here
+const SurfaceSpace = Union{Hemisphere, CorticalSurface}
 
 Base.getindex(c::CorticalSurface, h::BrainStructure) =
 	return haskey(c.hems, h) ? c.hems[h] : nothing
