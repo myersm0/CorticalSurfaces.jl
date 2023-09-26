@@ -2,7 +2,7 @@
 using CIFTI
 
 export Hemisphere, CorticalSurface, SurfaceSpace
-export size, getindex, append!, coordinates, vertices, remap, expand, collapse
+export size, getindex, append!, coordinates, vertices, expand, collapse, pad, trim
 
 struct SpatialData{T <: DataStyle} 
 	data::Any
@@ -131,6 +131,23 @@ expand(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 "Map a set of `Inclusive()` vertex indices to a collapsed (`Exclusive()`) range"
 collapse(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
+
+"Grow `x` to `size(surf, Exclusive())` and pad it with zeros along the medial wall"
+function pad(x::Vector, surf::Hemisphere)
+	length(x) == size(surf, Exclusive()) || 
+		error("Input length must match the size of the surface, exclusive of medial wall")
+	out = zeros(eltype(x), size(surf, Inclusive()))
+	verts = expand(1:length(x), surf)
+	out[verts] .= x
+	return out
+end
+
+"Shrink `x` to `size(surf, Inclusive())` by trimming out medial wall indices"
+function trim(x::Vector, surf::Hemisphere)
+	length(x) == size(surf, Inclusive()) || 
+		error("Input length must match the size of the surface, inclusive of medial wall")
+	return x[collapse(1:length(x), surf)]
+end
 
 check_size(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
 

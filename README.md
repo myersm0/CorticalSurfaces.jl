@@ -90,4 +90,14 @@ new_verts = expand(verts, c)    # result will be indices in the range [1, 32492]
 ```
 Note that in the former case, the vector returned might be shorter than the length of the input vector, because we're mapping from a larger range down to a smaller one; any of the inputs that belong to the medial wall will necessarily be omitted.
 
+Another pair of functions `pad` and `trim` perform a similar role but with a subtle difference: the input vector is a set of numbers, the values of which you *don't* want to change; instead, you want to grow its length by padding it with zeros wherever there's medial wall, or shrink it by trimming out elements that fall on the medial wall. The numbers could be some functional or statistical data, for example. For these operations to make sense, the size of the input vector must be `size(surf, Exclusive())` in the `pad` case, or `size(surf, Inclusive())` in the `trim` case.
+```
+functional_data = randn(size(c[L], Exclusive()))
+padded_data = pad(functional_data, c[L])
+
+# using trim() on the above result should give you back to the original functional data
+trimmed_data = trim(functional_data, c[L])
+```
+
+
 [![Build Status](https://github.com/myersm0/CorticalSurfaces.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/myersm0/CorticalSurfaces.jl/actions/workflows/CI.yml?query=branch%3Amain)
