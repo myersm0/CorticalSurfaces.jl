@@ -132,7 +132,7 @@ expand(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 collapse(inds::Union{UnitRange, Vector}, surf::Hemisphere) =
 	return filter(x -> x != 0, surf.remap[CollapseMW][inds])
 
-"Grow `x` to `size(surf, Exclusive())` by padding it with zeros along the medial wall"
+"Grow `x` to `size(surf, Inclusive())` by padding it with zeros along the medial wall"
 function pad(x::Vector, surf::Hemisphere)
 	length(x) == size(surf, Exclusive()) || 
 		error("Input length must match the size of the surface, exclusive of medial wall")
@@ -142,7 +142,7 @@ function pad(x::Vector, surf::Hemisphere)
 	return out
 end
 
-"Shrink `x` to `size(surf, Inclusive())` by trimming out medial wall indices"
+"Shrink `x` to `size(surf, Exclusive())` by trimming out medial wall indices"
 function trim(x::Vector, surf::Hemisphere)
 	length(x) == size(surf, Inclusive()) || 
 		error("Input length must match the size of the surface, inclusive of medial wall")
