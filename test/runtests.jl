@@ -62,6 +62,11 @@ nverts_total = nverts_mw + nverts_surface
 		@test length(temp_inds) == size(test[L], Exclusive())
 		@test maximum(temp_inds) == size(test[L], Inclusive())
 		@test length(unique(temp_inds)) == length(temp_inds)
+
+		sample_data = collect(1:size(test[L], Exclusive()))
+		padded_data = pad(sample_data, test[L])
+		trimmed_padded_data = trim(padded_data, test[L])
+		@test trimmed_padded_data == sample_data
 	end
 
 #	temp_inds = expand(1:59412, test)
