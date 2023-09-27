@@ -59,9 +59,20 @@ end
 "Make a meaningless, but functional, placeholder `Hemisphere` of a certain size"
 function Hemisphere(nvertices::Int)
 	coords = zeros(nvertices, 3)
-	mw = falses(nvertices)
-	return Hemisphere(coords, mw)
+	medial_wall = falses(nvertices)
+	return Hemisphere(coords, medial_wall)
 end
+
+"""
+Make a placeholder `Hemisphere` struct, without meaningful coordinates,
+from just a `BitVector` representing medial wall membership
+"""
+function Hemisphere(medial_wall::BitVector)
+	nvertices = length(medial_wall)
+	coords = zeros(nvertices, 3)
+	return Hemisphere(coords, medial_wall)
+end
+
 
 struct CorticalSurface <: SurfaceSpace
 	hems::Dict{BrainStructure, Hemisphere}
