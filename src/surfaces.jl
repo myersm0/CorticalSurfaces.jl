@@ -1,7 +1,7 @@
 
 using CIFTI
 
-export Hemisphere, CorticalSurface, SurfaceSpace
+export SurfaceSpace, Hemisphere, CorticalSurface
 export size, getindex, append!, coordinates, vertices, expand, collapse, pad, trim
 
 struct SpatialData{T <: DataStyle} 
@@ -11,7 +11,9 @@ end
 SpatialData(x::T) where T <: AbstractArray = SpatialData(DataStyle(x), x)
 SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
 
-Base.@kwdef struct Hemisphere
+abstract type SurfaceSpace end
+
+Base.@kwdef struct Hemisphere <: SurfaceSpace
 	coordinates::Dict{MedialWallIndexing, Matrix{Float64}}
 	medial_wall::Union{BitVector, Vector{Bool}}
 	vertices::Dict{IndexMapping, Vector}
@@ -50,7 +52,7 @@ function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	)
 end
 
-struct CorticalSurface
+struct CorticalSurface <: SurfaceSpace
 	hems::Dict{BrainStructure, Hemisphere}
 	vertices::Dict{MedialWallIndexing, Vector}
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
@@ -90,8 +92,6 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
 end
-
-const SurfaceSpace = Union{Hemisphere, CorticalSurface}
 
 Base.getindex(c::CorticalSurface, h::BrainStructure) =
 	return haskey(c.hems, h) ? c.hems[h] : nothing
