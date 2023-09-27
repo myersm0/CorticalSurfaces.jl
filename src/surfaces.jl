@@ -52,6 +52,12 @@ function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	)
 end
 
+function Hemisphere(nvertices::Int)
+	coords = zeros(nvertices, 3)
+	mw = falses(nvertices)
+	return Hemisphere(coords, mw)
+end
+
 struct CorticalSurface <: SurfaceSpace
 	hems::Dict{BrainStructure, Hemisphere}
 	vertices::Dict{MedialWallIndexing, Vector}
