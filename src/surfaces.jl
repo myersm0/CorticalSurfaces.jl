@@ -119,7 +119,7 @@ coordinates(v::Vector{Hemisphere}, args...) =
 
 "Get vertex numbers from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
 vertices(hem::Hemisphere) = hem.vertices[(Ipsilateral(), Inclusive())]
-vertices(hem::Hemisphere, ::Exclusive) = hem.vertices[(Ipsilateral(), Inclusive())]
+vertices(hem::Hemisphere, ::Exclusive) = hem.vertices[(Ipsilateral(), Exclusive())]
 vertices(hem::Hemisphere, args...) = hem.vertices[args...]
 
 "Get vertex numbers from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
@@ -148,11 +148,7 @@ end
 function trim(x::Union{AbstractRange, Vector}, surf::SurfaceSpace)
 	length(x) == size(surf, Inclusive()) || 
 		error("Input length must match the size of the surface, inclusive of medial wall")
-	if surf isa Hemisphere
-		return x[vertices(surf, Ipsilateral(), Exclusive())]
-	else
-		return x[vertices(surf, Exclusive())]
-	end
+	return x[vertices(surf, Exclusive())]
 end
 
 check_size(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
