@@ -25,6 +25,10 @@ Base.@kwdef struct Hemisphere <: SurfaceSpace
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
 end
 
+"""
+Make a Hemisphere from a set of xyz coordinates and a BitVector denoting
+medial wall membership
+"""
 function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	size(coords, 1) == length(medial_wall) || error(DimensionMismatch)
 	coordinates = Dict(
@@ -52,6 +56,7 @@ function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	)
 end
 
+"Make a minimally functional, placeholder `Hemisphere` of a certain size"
 function Hemisphere(nvertices::Int)
 	coords = zeros(nvertices, 3)
 	mw = falses(nvertices)
@@ -64,6 +69,7 @@ struct CorticalSurface <: SurfaceSpace
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
 end
 
+"Make a `CorticalSurface` from a left and a right `Hemisphere`, in that order"
 function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	lhem.vertices[(Bilateral(), Exclusive())] = 
 		lhem.vertices[(Ipsilateral(), Exclusive())]
@@ -99,37 +105,54 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
 end
 
+"Index into the `L` or `R` Hemisphere of a CorticalSurface"
 Base.getindex(c::CorticalSurface, h::BrainStructure) =
 	return haskey(c.hems, h) ? c.hems[h] : nothing
 
+"Access supplementary spatial data `s` for a Hemisphere"
 Base.getindex(hem::Hemisphere, s::Symbol) =
 	return haskey(hem.appendix, s) ? hem.appendix[s].data : nothing
 
+"Index into a Hemisphere's supplementary spatial data"
 Base.getindex(x::SpatialData, args...) =
 	return getindex(x.data, args...)
 
-"Get the number of vertices, `Exclusive()` or `Inclusive()` of medial wall"
+"Get the number of vertices of a Hemisphere, `Exclusive()` or `Inclusive()` of medial wall"
 Base.size(hem::Hemisphere, mw::MedialWallIndexing) = hem.size[mw]
+
+"Get the number of vertices of a `Hemisphere`, `Inclusive()` of medial wall"
 Base.size(hem::Hemisphere) = size(hem, Inclusive())
+
+"Get the number of vertices of a `Hemisphere`"
 Base.size(c::CorticalSurface, args...) = size(c[L], args...) + size(c[R], args...)
 
 "Get coordinates from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
 coordinates(hem::Hemisphere, mw::MedialWallIndexing) = hem.coordinates[mw]
+
+"Get coordinates from a `Hemisphere`, `Inclusive()` of medial wall"
 coordinates(hem::Hemisphere) = coordinates(hem, Inclusive())
 
 "Get coordinates from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
 coordinates(c::CorticalSurface, args...) = 
 	vcat([coordinates(c[hem], args...) for hem in LR]...)
+
+"Get coordinates from a Vector of Hemispheres"
 coordinates(v::Vector{Hemisphere}, args...) = 
 	vcat([coordinates(h, args...) for h in v]...)
 
-"Get vertex numbers from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
+"Get vertex numbers from a `Hemisphere`, `Inclusive()` of medial wall"
 vertices(hem::Hemisphere) = hem.vertices[(Ipsilateral(), Inclusive())]
+
+"Get vertex numbers from a `Hemisphere`, `Exclusive()` of medial wall"
 vertices(hem::Hemisphere, ::Exclusive) = hem.vertices[(Ipsilateral(), Exclusive())]
+
+"Get vertex numbers from a `Hemisphere`, `Exclusive()` of medial wall"
 vertices(hem::Hemisphere, args...) = hem.vertices[args...]
 
-"Get vertex numbers from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
+"Get vertex numbers from a `CorticalSurface`, `Inclusive()` of medial wall"
 vertices(c::CorticalSurface) = c.vertices[Inclusive()]
+
+"Get vertex numbers from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
 vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
 
 "Map a set of `Exclusive()` vertex indices to an expanded (`Inclusive()`) range"
