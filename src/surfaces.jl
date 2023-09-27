@@ -56,7 +56,7 @@ function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	)
 end
 
-"Make a minimally functional, placeholder `Hemisphere` of a certain size"
+"Make a meaningless, but functional, placeholder `Hemisphere` of a certain size"
 function Hemisphere(nvertices::Int)
 	coords = zeros(nvertices, 3)
 	mw = falses(nvertices)
@@ -105,15 +105,15 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
 end
 
-"Index into the `L` or `R` Hemisphere of a CorticalSurface"
+"Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
 Base.getindex(c::CorticalSurface, h::BrainStructure) =
 	return haskey(c.hems, h) ? c.hems[h] : nothing
 
-"Access supplementary spatial data `s` for a Hemisphere"
+"Access supplementary spatial data `s` for a `Hemisphere`"
 Base.getindex(hem::Hemisphere, s::Symbol) =
 	return haskey(hem.appendix, s) ? hem.appendix[s].data : nothing
 
-"Index into a Hemisphere's supplementary spatial data"
+"Index into a `Hemisphere`'s supplementary spatial data"
 Base.getindex(x::SpatialData, args...) =
 	return getindex(x.data, args...)
 
