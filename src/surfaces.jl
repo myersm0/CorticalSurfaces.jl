@@ -26,8 +26,10 @@ Base.@kwdef struct Hemisphere <: SurfaceSpace
 end
 
 """
-Make a Hemisphere from a set of xyz coordinates and a BitVector denoting
-medial wall membership
+    Hemisphere(coords::Matrix, medial_wall::BitVector)
+
+Make a `Hemisphere` from a `Matrix` of xyz coordinates and a `BitVector`
+denoting medial wall membership
 """
 function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	size(coords, 1) == length(medial_wall) || error(DimensionMismatch)
@@ -56,7 +58,11 @@ function Hemisphere(coords::Matrix, medial_wall::BitVector)
 	)
 end
 
-"Make a meaningless, but functional, placeholder `Hemisphere` of a certain size"
+"""
+    Hemisphere(nvertices::Int)
+
+Make a meaningless, but functional, placeholder `Hemisphere` of a certain size
+"""
 function Hemisphere(nvertices::Int)
 	coords = zeros(nvertices, 3)
 	medial_wall = falses(nvertices)
@@ -64,6 +70,8 @@ function Hemisphere(nvertices::Int)
 end
 
 """
+    Hemisphere(medial_wall::BitVector)
+
 Make a placeholder `Hemisphere` struct, without meaningful coordinates,
 from just a `BitVector` representing medial wall membership
 """
@@ -73,14 +81,17 @@ function Hemisphere(medial_wall::BitVector)
 	return Hemisphere(coords, medial_wall)
 end
 
-
 struct CorticalSurface <: SurfaceSpace
 	hems::Dict{BrainStructure, Hemisphere}
 	vertices::Dict{MedialWallIndexing, Vector}
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
 end
 
-"Make a `CorticalSurface` from a left and a right `Hemisphere`, in that order"
+"""
+    CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
+
+Make a `CorticalSurface` from a left and a right `Hemisphere`, in that order
+"""
 function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	lhem.vertices[(Bilateral(), Exclusive())] = 
 		lhem.vertices[(Ipsilateral(), Exclusive())]

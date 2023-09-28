@@ -20,7 +20,7 @@ const IndexMapping = Tuple{HemisphericIndexing, MedialWallIndexing}
 const CollapseMW = (Inclusive() => Exclusive())
 const ExpandMW = (Exclusive() => Inclusive())
 
-# ===== traits concerning the input shape of user-supplied supplementary data =====
+# ===== traits concerning the shape of user-supplied supplementary data =====
 abstract type DataStyle end
 
 abstract type ListStyle <: DataStyle end
