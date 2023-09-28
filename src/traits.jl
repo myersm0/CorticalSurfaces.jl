@@ -6,12 +6,10 @@ export IndexMapping, CollapseMW, ExpandMW
 # ===== traits concerning indexing options =====
 abstract type IndexingStyle end
 
-# indexing within or across hemispheres?
 abstract type HemisphericIndexing <: IndexingStyle end
 struct Ipsilateral <: HemisphericIndexing end
 struct Bilateral <: HemisphericIndexing end
 
-# inclusion of the medial wall or not?
 abstract type MedialWallIndexing <: IndexingStyle end
 struct Exclusive <: MedialWallIndexing end
 struct Inclusive <: MedialWallIndexing end
