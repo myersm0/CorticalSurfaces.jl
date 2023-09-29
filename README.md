@@ -19,7 +19,7 @@ Where each item is assumed to be far more important than the previous. Since in-
 Within Julia:
 ```
 using Pkg
-Pkg.add(url = "http://github.com/myersm0/CorticalSurfaces.jl")
+Pkg.add("CorticalSurfaces")
 ```
 
 ## Usage
