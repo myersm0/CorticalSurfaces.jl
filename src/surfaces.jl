@@ -4,13 +4,6 @@ using CIFTI
 export SurfaceSpace, Hemisphere, CorticalSurface
 export size, getindex, append!, coordinates, vertices, expand, collapse, pad, trim
 
-struct SpatialData{T <: DataStyle} 
-	data::Any
-end
-
-SpatialData(x::T) where T <: AbstractArray = SpatialData(DataStyle(x), x)
-SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
-
 abstract type SurfaceSpace end
 
 Base.@kwdef struct Hemisphere <: SurfaceSpace
