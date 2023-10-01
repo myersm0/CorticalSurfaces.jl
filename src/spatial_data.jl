@@ -19,7 +19,7 @@ construct a SparseMatrixCSC adjacency matrix
 """
 function make_adjacency_matrix(neighbors::Vector{Vector{Int}})
 	nvertices = length(neighbors)
-	A = spzeros(Bool, n, n)
+	A = spzeros(Bool, nvertices, nvertices)
 	for v in 1:nvertices
 		A[v, v] = true
 		A[v, neighbors[v]] .= true
