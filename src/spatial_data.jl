@@ -10,12 +10,19 @@ end
 SpatialData(x::T) where T <: AbstractArray = SpatialData(DataStyle(x), x)
 SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
 
+"""
+	 make_adjacency_matrix(neighbors::Vector{Vector{Int}})
+
+Given an adjacency list -- here, a `Vector` where each element `v`  represents a vertex
+and contains a `Vector{Int}` listing that vertex's neighbors -- of length `nvertices`, 
+construct a SparseMatrixCSV adjacency matrix
+"""
 function make_adjacency_matrix(neighbors::Vector{Vector{Int}})
-	n = length(neighbors)
+	nvertices = length(neighbors)
 	A = spzeros(Bool, n, n)
-	for vertex in 1:n
-		A[vertex, vertex] = true
-		A[vertex, neighbors[vertex]] .= true
+	for v in 1:nvertices
+		A[v, v] = true
+		A[v, neighbors[v]] .= true
 	end
 	return A
 end
