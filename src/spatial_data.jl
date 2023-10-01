@@ -1,4 +1,6 @@
 
+export make_adjacency_matrix
+
 using SparseArrays
 
 struct SpatialData{T <: DataStyle} 
@@ -8,7 +10,7 @@ end
 SpatialData(x::T) where T <: AbstractArray = SpatialData(DataStyle(x), x)
 SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
 
-function make_adjacency_matrix(neighbors::Vector{Vector})
+function make_adjacency_matrix(neighbors::Vector{Vector{T}}) where T <: Integer
 	n = length(neighbors)
 	A = spzeros(Bool, n, n)
 	for vertex in 1:n
