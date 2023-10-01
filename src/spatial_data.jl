@@ -15,7 +15,7 @@ SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
 
 Given an adjacency list -- here, a `Vector` where each element `v`  represents a vertex
 and contains a `Vector{Int}` listing that vertex's neighbors -- of length `nvertices`, 
-construct a SparseMatrixCSV adjacency matrix
+construct a SparseMatrixCSC adjacency matrix
 """
 function make_adjacency_matrix(neighbors::Vector{Vector{Int}})
 	nvertices = length(neighbors)
