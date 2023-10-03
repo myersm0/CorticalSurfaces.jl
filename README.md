@@ -99,4 +99,7 @@ padded_data = pad(functional_data, c[L])
 trimmed_data = trim(padded_data, c[L])
 ```
 
+## Acknowledgments
+For testing and demonstration purposes, this package uses surface data from the MSC dataset (described in [Gordon et al 2017](https://www.cell.com/neuron/fulltext/S0896-6273(17)30613-X)). This data was obtained from the OpenfMRI database. Its accession number is ds000224.
+
 [![Build Status](https://github.com/myersm0/CorticalSurfaces.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/myersm0/CorticalSurfaces.jl/actions/workflows/CI.yml?query=branch%3Amain)

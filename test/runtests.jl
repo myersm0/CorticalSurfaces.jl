@@ -5,14 +5,14 @@ using JLD
 
 data_dir = joinpath(dirname(@__FILE__), "..", "data")
 
-# load Conte69 midthickness files and generate some ground truth info
-conte_file = joinpath(data_dir, "test_data.jld")
-conte = load(conte_file)
-surfL = conte["pointset"][L]
-surfR = conte["pointset"][R]
-mwL = conte["medial wall"][L]
-mwR = conte["medial wall"][R]
-neighbors = conte["adjacency list"]
+# load MSC01 32k fs LR files and generate some ground truth info
+MSC01_file = joinpath(data_dir, "MSC01.jld")
+MSC01 = load(MSC01_file)
+surfL = MSC01["pointsets"]["midthickness"][L]
+surfR = MSC01["pointsets"]["midthickness"][R]
+mwL = MSC01["medial wall"][L]
+mwR = MSC01["medial wall"][R]
+neighbors = MSC01["adjacency list"]
 surf_vertices_L = findall(.!mwL)
 surf_vertices_R = findall(.!mwR)
 surf_vertices_LR = [surf_vertices_L; maximum(surf_vertices_L) .+ surf_vertices_R]
