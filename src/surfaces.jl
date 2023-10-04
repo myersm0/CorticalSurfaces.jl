@@ -8,6 +8,7 @@ abstract type SurfaceSpace end
 
 Base.@kwdef struct Hemisphere <: SurfaceSpace
 	coordinates::Dict{MedialWallIndexing, Matrix{Float64}}
+	triangles::Union{Nothing, Matrix}
 	medial_wall::Union{BitVector, Vector{Bool}}
 	vertices::Dict{IndexMapping, Vector}
 	appendix::Dict{Symbol, SpatialData} = Dict{Symbol, SpatialData}()
@@ -24,7 +25,9 @@ end
 Make a `Hemisphere` from a `Matrix` of xyz coordinates and a `BitVector`
 denoting medial wall membership
 """
-function Hemisphere(coords::Matrix, medial_wall::BitVector)
+function Hemisphere(
+		coords::Matrix, medial_wall::BitVector; triangles::Union{Nothing, Matrix} = nothing
+	)
 	size(coords, 1) == length(medial_wall) || error(DimensionMismatch)
 	coordinates = Dict(
 		Exclusive() => coords[.!medial_wall, :],
@@ -39,6 +42,7 @@ function Hemisphere(coords::Matrix, medial_wall::BitVector)
 
 	return Hemisphere(
 		coordinates = coordinates, 
+		triangles = triangles,
 		medial_wall = medial_wall,
 		vertices = Dict(
 			(Ipsilateral(), Inclusive()) => 1:nverts,
