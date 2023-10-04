@@ -27,4 +27,26 @@ function make_adjacency_matrix(neighbors::Vector{Vector{Int}})
 	return A
 end
 
+"""
+	 make_adjacency_list(hemisphere, triangles)
+
+Make an adjacency list from a 3-column matrix of triangle vertex faces
+"""
+function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
+	size(triangles, 2) == 3 || error("Expected a 3-column matrix of triangle vertices")
+	nvertices = size(hem)
+	out = Vector{Vector{Int}}(undef, nvertices)
+	Threads.@threads for v in 1:nvertices
+		out[v] =
+			@chain triangles begin
+				filter(x -> v in x, eachrow(_))
+				union(_...)
+				setdiff(_, v)
+				sort
+			end
+	end
+	return out
+end
+
+
 
