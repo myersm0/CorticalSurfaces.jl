@@ -5,6 +5,8 @@ version = "0.3.2"
 
 [deps]
 CIFTI = "8026ff91-9e86-4f19-bd27-c139e9e8bf7a"
+Chain = "8be319e6-bccf-4806-a6f7-6fae938471bc"
+GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
