@@ -4,6 +4,10 @@ using CIFTI
 export SurfaceSpace, Hemisphere, CorticalSurface
 export size, getindex, append!, coordinates, vertices, expand, collapse, pad, trim
 
+struct SpatialData{T, N}
+	data::Dict{MedialWallIndexing, T′} where T′ <: AbstractArray{T, N}
+end
+
 abstract type SurfaceSpace end
 
 Base.@kwdef struct Hemisphere <: SurfaceSpace
