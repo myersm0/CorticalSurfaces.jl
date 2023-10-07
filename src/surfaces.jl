@@ -132,9 +132,9 @@ function SpatialData(mat::AbstractMatrix, hem::Hemisphere, ::Inclusive)
 	data[Inclusive()] = mat
 	excl_verts = vertices(hem, Exclusive())
 	if MatrixStyle(mat) == IsSquare()
-		data[Exclusive()] = @views mat[excl_verts, excl_verts]
+		data[Exclusive()] = mat[excl_verts, excl_verts]
 	else
-		data[Exclusive()] = @views mat[excl_verts, :]
+		data[Exclusive()] = mat[excl_verts, :]
 	end
 	return SpatialData{T, N}(data)
 end
