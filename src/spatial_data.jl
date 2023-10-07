@@ -1,8 +1,5 @@
 
-struct SpatialData{T <: DataStyle} 
-	data::Any
+struct SpatialData{T, N}
+	data::Dict{MedialWallIndexing, T′} where T′ <: AbstractArray{T, N}
 end
-
-SpatialData(x::T) where T <: AbstractArray = SpatialData(DataStyle(x), x)
-SpatialData(::T, data::AbstractArray) where T = SpatialData{T}(data)
 

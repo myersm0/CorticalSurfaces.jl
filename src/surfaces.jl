@@ -7,11 +7,12 @@ export size, getindex, append!, coordinates, vertices, expand, collapse, pad, tr
 abstract type SurfaceSpace end
 
 Base.@kwdef struct Hemisphere <: SurfaceSpace
-	coordinates::Dict{MedialWallIndexing, Matrix{Float64}}
-	triangles::Union{Nothing, Matrix}
-	medial_wall::Union{BitVector, Vector{Bool}}
-	vertices::Dict{IndexMapping, Vector}
-	appendix::Dict{Symbol, SpatialData} = Dict{Symbol, SpatialData}()
+	coordinates::Dict{MedialWallIndexing, Matrix{T}} where T <: Real
+	triangles::Union{Nothing, Matrix{Int}}
+	medial_wall::BitVector
+	vertices::Dict{IndexMapping, Vector{Int}}
+	appendix::Dict{Symbol, SpatialData} = 
+		Dict{Symbol, SpatialData}()
 	size::Dict{MedialWallIndexing, Int} = Dict(
 		Exclusive() => sum(.!medial_wall),
 		Inclusive() => length(medial_wall)
@@ -29,7 +30,7 @@ function Hemisphere(
 		coords::Matrix, medial_wall::BitVector; triangles::Union{Nothing, Matrix} = nothing
 	)
 	size(coords, 1) == length(medial_wall) || error(DimensionMismatch)
-	coordinates = Dict(
+	coordinates = Dict{MedialWallIndexing, Matrix{eltype(coords)}}(
 		Exclusive() => coords[.!medial_wall, :],
 		Inclusive() => coords
 	)
@@ -44,11 +45,11 @@ function Hemisphere(
 		coordinates = coordinates, 
 		triangles = triangles,
 		medial_wall = medial_wall,
-		vertices = Dict(
+		vertices = Dict{IndexMapping, Vector{Int}}(
 			(Ipsilateral(), Inclusive()) => 1:nverts,
 			(Ipsilateral(), Exclusive()) => surf_inds
 		),
-		remap = Dict(
+		remap = Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}(
 			(Inclusive() => Exclusive()) => temp,
 			(Exclusive() => Inclusive()) => surf_inds
 		)
@@ -124,17 +125,48 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
 end
 
+function SpatialData(mat::AbstractMatrix, hem::Hemisphere, ::Inclusive)
+	T = eltype(mat)
+	N = 2
+	data = Dict{MedialWallIndexing, AbstractArray{T, N}}()
+	data[Inclusive()] = mat
+	excl_verts = vertices(hem, Exclusive())
+	if MatrixStyle(mat) == IsSquare()
+		data[Exclusive()] = @views mat[excl_verts, excl_verts]
+	else
+		data[Exclusive()] = @views mat[excl_verts, :]
+	end
+	return SpatialData{T, N}(data)
+end
+
+function SpatialData(v::AbstractVector, hem::Hemisphere, ::Inclusive)
+	T = eltype(v)
+	N = 1
+	data = Dict{MedialWallIndexing, AbstractArray{T, N}}()
+	data[Inclusive()] = v
+	excl_verts = vertices(hem, Exclusive())
+	if ListStyle(v) == IsScalarList()
+		data[Exclusive()] = v[excl_verts]
+	else
+		data[Exclusive()] = [collapse(x, hem) for x in v[excl_verts]]
+	end
+	return SpatialData{T, N}(data)
+end
+
 "Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
 Base.getindex(c::CorticalSurface, h::BrainStructure) =
 	return haskey(c.hems, h) ? c.hems[h] : nothing
 
 "Access supplementary spatial data `s` for a `Hemisphere`"
 Base.getindex(hem::Hemisphere, s::Symbol) =
-	return haskey(hem.appendix, s) ? hem.appendix[s].data : nothing
+	return haskey(hem.appendix, s) ? hem.appendix[s].data[Inclusive()] : nothing
+
+Base.getindex(hem::Hemisphere, s::Symbol, mw::MedialWallIndexing) =
+	return haskey(hem.appendix, s) ? hem.appendix[s].data[mw] : nothing
 
 "Index into a `Hemisphere`'s supplementary spatial data"
-Base.getindex(x::SpatialData, args...) =
-	return getindex(x.data, args...)
+Base.getindex(x::SpatialData, mw::MedialWallIndexing, args...) =
+	return getindex(x.data[mw], args...)
 
 "Get the number of vertices of a Hemisphere, `Exclusive()` or `Inclusive()` of medial wall"
 Base.size(hem::Hemisphere, mw::MedialWallIndexing) = hem.size[mw]
@@ -199,13 +231,40 @@ function trim(x::Union{AbstractRange, Vector}, surf::SurfaceSpace)
 	return x[vertices(surf, Exclusive())]
 end
 
-check_size(hem::Hemisphere, x::Any) = size(hem) == size(x, 1)
+function check_size(
+		::IsSquare, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
+	)
+	return all(size(what) .== size(hem, indexing))
+end
+
+function check_size(
+		::IsRectangular, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
+	)
+	return size(what, 1) == size(hem, indexing)
+end
+
+function check_size(
+		::IsScalarList, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
+	)
+	return length(what) == size(hem, indexing)
+end
+
+function check_size(
+		::IsNestedList, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
+	)
+	hem_size = size(hem, indexing)
+	return length(what) == hem_size && all([all(1 .<= x .<= hem_size) for x in what])
+end
+
+function check_size(hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing)
+	return check_size(DataStyle(what), hem, what, indexing)
+end
 
 "Add a spatial data representation to a `Hemisphere`"
-Base.append!(hem::Hemisphere, k::Symbol, x::AbstractArray) = 
-	check_size(hem, x) ? 
-		hem.appendix[k] = SpatialData(x) : 
-		error(DimensionMismatch)
+function Base.append!(hem::Hemisphere, k::Symbol, what::T) where T <: AbstractArray
+	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
+	hem.appendix[k] = SpatialData(what, hem, Inclusive())
+end
 
 function Base.show(io::IO, ::MIME"text/plain", h::Hemisphere)
 	print("Hemisphere with $(size(h)) vertices ($(size(h, Exclusive())) without medial wall)")
