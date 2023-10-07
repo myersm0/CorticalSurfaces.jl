@@ -10,7 +10,7 @@ end
 
 abstract type SurfaceSpace end
 
-Base.@kwdef struct Hemisphere <: SurfaceSpace
+@kwdef struct Hemisphere <: SurfaceSpace
 	coordinates::Dict{MedialWallIndexing, Matrix{T}} where T <: Real
 	triangles::Union{Nothing, Matrix{Int}}
 	medial_wall::BitVector
