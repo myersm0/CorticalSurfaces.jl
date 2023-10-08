@@ -5,13 +5,13 @@ using SparseArrays
 using Chain
 
 """
-	 make_adjacency_matrix(neighbors::Vector{Vector{Int}})
+	 make_adjacency_matrix(neighbors)
 
 Given an adjacency list -- here, a `Vector` where each element `v`  represents a vertex
 and contains a `Vector{Int}` listing that vertex's neighbors -- of length `nvertices`, 
-construct a SparseMatrixCSC adjacency matrix
+construct a `SparseMatrixCSC` adjacency matrix
 """
-function make_adjacency_matrix(neighbors::Vector{Vector{Int}})
+function make_adjacency_matrix(neighbors::AdjacencyList)
 	nvertices = length(neighbors)
 	A = spzeros(Bool, nvertices, nvertices)
 	for v in 1:nvertices
@@ -22,14 +22,24 @@ function make_adjacency_matrix(neighbors::Vector{Vector{Int}})
 end
 
 """
+    make_adjacency_matrix(hem)
+
+Make an adjacency matrix from the adjacency list `:neighbors` contained in `hem`
+"""
+function make_adjacency_matrix(hem::Hemisphere)
+	haskey(hem.appendix, :neighbors) || error("Hemisphere must contain :neighbors")
+	make_adjacency_matrix(hem[:neighbors])
+end
+
+"""
 	 make_adjacency_list(hemisphere, triangles)
 
-Make an adjacency list from a 3-column matrix of triangle vertex faces
+Make an adjacency list from a 3-column matrix of triangle vertices
 """
 function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
 	size(triangles, 2) == 3 || error("Expected a 3-column matrix of triangle vertices")
 	nvertices = size(hem)
-	out = Vector{Vector{Int}}(undef, nvertices)
+	out = AdjacencyList{Int}(undef, nvertices)
 	Threads.@threads for v in 1:nvertices
 		out[v] =
 			@chain triangles begin
@@ -40,6 +50,16 @@ function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
 			end
 	end
 	return out
+end
+
+"""
+    make_adjacency_list(hem)
+
+Make an adjacency list based on the `triangles` field of `hem::Hemisphere`
+"""
+function make_adjacency_list(hem::Hemisphere)
+	!isnothing(hem.triangles) || error("Hemisphere's `triangles` field cannot be empty")
+	make_adjacency_matrix(hem, hem.triangles)
 end
 
 
