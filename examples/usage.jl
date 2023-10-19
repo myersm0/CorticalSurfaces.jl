@@ -1,9 +1,10 @@
 
 using CorticalSurfaces
 using JLD
+using CIFTI
 
-# import L, R, and LR shorthands for referring to left, right, or both hemispheres
-using CIFTI: L, R, LR
+# CIFTI.jl supplies a shorthand we'll be using throughout: 
+# constants L, R, and LR for referring to left, right, or both hemispheres
 
 # just for demonstration purposes: we can create a Hemisphere from any
 # xyz coordinates and medial wall information (nonsensical in this case)
@@ -36,10 +37,37 @@ hems = Dict(
 hems[L][:neighbors] = make_adjacency_list(hems[L])
 hems[R][:neighbors] = make_adjacency_list(hems[R])
 
+# get the vertex indices of the R hem, inclusive of medial wall by default:
+vertices(hems[R])
+
+# or as above, but excluding medial wall:
+vertices(hems[R], Exclusive())
+
+# ideally we'd like to also be able to index into hemispheres bilaterally sometimes;
+# but this doesn't work *yet*, because while the left and right hemispheres are
+# both defined, they don't know about each other yet
+vertices(hems[R], Bilateral(), Exclusive()) # doesn't work yet; see below
+
 # now put the two hemispheres together inside a single CorticalSurface struct:
 c = CorticalSurface(hems[L], hems[R])
 
-c[L] == hems[L]
-c[R] == hems[R]
+# Note that c now contains both Hemisphere structs, which are each now slightly
+# modified because we have new information: now that they're bundled into
+# a single struct c, the two hemispheres can know about each other, and so we now 
+# have the information that we need in order to do things like index into the 
+# hemispheres bilaterally if needed:
+vertices(c[R], Bilateral(), Exclusive()) # now it works
+
+# You can also get vertices over the entire CorticalSurface struct (i.e. both hems):
+vertices(c)
+vertices(c, Exclusive())
+
+# note the equivalence:
+vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
+
+@collapse vertices(c, Inclusive())
+
+
+
 
 
