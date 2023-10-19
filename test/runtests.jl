@@ -37,13 +37,13 @@ nverts_total = nverts_mw + nverts_surface
 		for i in 1:nverts
 			identity[i, i] = true
 		end
-		append!(test[hem], :identity, identity)
+		test[hem][:identity] = identity
 		@test test[hem][:identity] == identity
-		append!(test[hem], :vertexlist, 1:nverts)
+		test[hem][:vertexlist] = 1:nverts
 		@test test[hem][:vertexlist] == 1:nverts
 	end
 
-	append!(test[L], :neighbors, neighbors)
+	test[L][:neighbors] = neighbors
 	a = vertices(test[L], (Ipsilateral(), Exclusive()))
 	test_vert = 22878
 	inds = test[L][:neighbors][test_vert]

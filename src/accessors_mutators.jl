@@ -83,9 +83,15 @@ function check_size(hem::Hemisphere, what::AbstractArray, indexing::MedialWallIn
 	return check_size(DataStyle(what), hem, what, indexing)
 end
 
-"Add a spatial data representation to a `Hemisphere`"
 function Base.append!(hem::Hemisphere, k::Symbol, what::T) where T <: AbstractArray
 	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
 	hem.appendix[k] = SpatialData(what, hem, Inclusive())
 end
+
+function Base.setindex!(hem::Hemisphere, what::T, k::Symbol) where T <: AbstractArray
+	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
+	hem.appendix[k] = SpatialData(what, hem, Inclusive())
+end
+
+
 
