@@ -2,7 +2,7 @@
 export @exclusive, @collapse
 
 macro exclusive(expr)
-	surface = expr.args[1]
+	surface = :($(esc(expr.args[1])))
 	k = expr.args[2]
 	return :($surface[$k, Exclusive()])
 end
