@@ -6,7 +6,8 @@ Make a `Hemisphere` from a `Matrix` of xyz coordinates and a `BitVector`
 denoting medial wall membership
 """
 function Hemisphere(
-		coords::Matrix, medial_wall::BitVector; triangles::Union{Nothing, Matrix} = nothing
+		coords::Matrix, medial_wall::Union{Vector{Bool}, BitVector}; 
+		triangles::Union{Nothing, Matrix} = nothing
 	)
 	size(coords, 1) == length(medial_wall) || error(DimensionMismatch)
 	coordinates = Dict{MedialWallIndexing, Matrix{eltype(coords)}}(
@@ -23,7 +24,7 @@ function Hemisphere(
 	return Hemisphere(
 		coordinates = coordinates, 
 		triangles = triangles,
-		medial_wall = medial_wall,
+		medial_wall = convert(BitVector, medial_wall),
 		vertices = Dict{IndexMapping, Vector{Int}}(
 			(Ipsilateral(), Inclusive()) => 1:nverts,
 			(Ipsilateral(), Exclusive()) => surf_inds
