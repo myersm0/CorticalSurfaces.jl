@@ -39,8 +39,14 @@ Base.cat(::IsSquare, a::AbstractMatrix, b::AbstractMatrix) =
 
 # TODO: take a closer look at the performance of this one;
 # what's going on?
-Base.cat(::IsSquare, a::SparseMatrixCSC, b::SparseMatrixCSC) =
-	return [a spzeros(eltype(a), size(a)...); spzeros(eltype(b), size(b)...) b]
+function Base.cat(::IsSquare, a::SparseMatrixCSC, b::SparseMatrixCSC)
+	size_a = size(a)
+	size_b = size(b)
+	return [
+		a spzeros(eltype(a), size_a[1], size_b[2]);
+		spzeros(eltype(b), size_b[1], size_a[2]) b
+	]
+end
 
 Base.cat(::IsScalarList, a::Vector, b::Vector) = 
 	return [a; b]
