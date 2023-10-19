@@ -48,7 +48,6 @@ vertices(hems[R], Exclusive())
 # ideally we'd like to also be able to index into hemispheres bilaterally sometimes;
 # but this doesn't work *yet*, because while the left and right hemispheres are
 # both defined already, they don't know about each other yet
-vertices(hems[R], Bilateral(), Exclusive()) # doesn't work yet; see below
 
 # now put the two hemispheres together inside a single CorticalSurface struct:
 c = CorticalSurface(hems[L], hems[R])
@@ -132,6 +131,13 @@ c[:A, Exclusive()]
 c[:neighbors]
 c[:neighbors, Exclusive()]
 
+# A performance warning about accessing CorticalSurface data like this:
+# if you need to *frequently* access bilateral spatial data like in the above few 
+# examples, it's better to do it once and store that output in a new object, like this:
+A_bilateral = c[:A]
 
+# this is because, due to the potentially large size of things like c[:A],
+# the total object itself is not stored but rather concatenated dynamically
+# from each hemisphere every time it's requested
 
 
