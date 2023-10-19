@@ -116,12 +116,21 @@ c[L][:neighbors]
 c[L][:A] = make_adjacency_matrix(hems[L])
 c[R][:A] = make_adjacency_matrix(hems[R])
 
+# As above, you may have a square matrix of spatial data defined for each of the 
+# hemispheres individually, but sometimes you'd like to access them as one big matrix
+# (i.e. concatenated across both dimensions). You can simply do the below for such 
+# cases; but be aware the that the I and III quadrants will be all zeros:
+c[:A] 
+c[:A, Exclusive()] 
 
+# In the case of an adjacency matrix, as here, that zero-padding is probably what we
+# want, but if it's something else like a distance matrix, then you need to either 
+# avoid accessing those quadrants or else fill them in yourself with something 
+# appropriate like NaN or Inf
 
-
-
-
-
+# This concept may also apply to Vector spatial data, such as an adjacency list:
+c[:neighbors]
+c[:neighbors, Exclusive()]
 
 
 
