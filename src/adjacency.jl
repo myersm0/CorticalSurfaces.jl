@@ -56,7 +56,7 @@ Make an adjacency list based on the `triangles` field of `hem::Hemisphere`
 """
 function make_adjacency_list(hem::Hemisphere)
 	!isnothing(hem.triangles) || error("Hemisphere's `triangles` field cannot be empty")
-	make_adjacency_matrix(hem, hem.triangles)
+	make_adjacency_list(hem, hem.triangles)
 end
 
 
