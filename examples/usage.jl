@@ -33,6 +33,12 @@ hems = Dict(
 	for hem in LR
 )
 
+# get the spatial coordinates of the R hem, inclusive of medial wall by default:
+coordinates(hems[R])
+
+# or as above, but excluding medial wall:
+coordinates(hems[R], Exclusive())
+
 # get the vertex indices of the R hem, inclusive of medial wall by default:
 vertices(hems[R])
 
@@ -41,7 +47,7 @@ vertices(hems[R], Exclusive())
 
 # ideally we'd like to also be able to index into hemispheres bilaterally sometimes;
 # but this doesn't work *yet*, because while the left and right hemispheres are
-# both defined, they don't know about each other yet
+# both defined already, they don't know about each other yet
 vertices(hems[R], Bilateral(), Exclusive()) # doesn't work yet; see below
 
 # now put the two hemispheres together inside a single CorticalSurface struct:
@@ -53,16 +59,20 @@ c = CorticalSurface(hems[L], hems[R])
 # to do things like index into the hemispheres bilaterally if needed:
 vertices(c[R], Bilateral(), Exclusive()) # now it works
 
-# You can also get vertex indices relative to the entire CorticalSurface struct 
-# (i.e. both hems consecutively numbered, instead of just each hem individaully):
+# You can also get vertex indices from the entire CorticalSurface struct, in which
+# case the index numbering will be bilateral (i.e. both hems consecutively numbered, 
+# instead of just 1:size(hem) for each hem individaully):
 vertices(c)
 vertices(c, Exclusive())
 
 # note the equivalence:
 vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
 
+# The function coordinates() works analogously:
+coordinates(c) == [coordinates(c[L]); coordinates(c[R])]
+
 # similarly you can get the sizes of the hemispheres (number of vertices)
-# individuall or combined:
+# individually or combined:
 size(c)
 size(c) == (size(c[L]) + size(c[R])) # true
 
@@ -73,13 +83,42 @@ size(c, Exclusive()) == (size(c[L], Exclusive()) + size(c[R], Exclusive())) # tr
 
 # sometimes you want vertex indices that will map back to a medial wall-less 
 # CIFTI file (containing functional data for example):
+collapse(vertices(c), c)
+
+# or, a little more concisely:
 @collapse vertices(c)
 
-# optionally add additional spatial information, such as adjacency lists:
+# or other times you want to work in the opposite direction: you have some indices
+# (say [99, 999, 9999, 59412]) from a medial wall-less CIFTI and you want to map
+# those indices back to a CorticalSurface struct c to get the coordinates (for example):
+verts = [99, 999, 9999, 59412]
+expanded_verts = expand(verts, c)
+coordinates(c)[expanded_verts, :]
+
+# or similarly you can pass the argument Exclusive() to coordinates()
+# and achieve the same thing without first transforming the vertices:
+coordinates(c, Exclusive())[verts, :]
+
+# optionally add supplementary spatial information, such as adjacency lists:
 c[L][:neighbors] = make_adjacency_list(hems[L])
 c[R][:neighbors] = make_adjacency_list(hems[R])
 
+# now access the supplementary spatial data you supplied:
+c[L][:neighbors]
+
+# or, to exclude medial wall vertices:
 @exclusive c[L][:neighbors]
+
+# carefully take a look at outputs from the above and observe what @exclusive did:
+# - it reduced the elements of the adjacency list to include only non-medial wall elements
+# - it also modified the indices within each element by adjusting for absense of medial wall
+
+c[L][:A] = make_adjacency_matrix(hems[L])
+c[R][:A] = make_adjacency_matrix(hems[R])
+
+
+
+
 
 
 

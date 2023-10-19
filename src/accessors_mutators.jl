@@ -93,10 +93,6 @@ function Base.setindex!(hem::Hemisphere, what::T, k::Symbol) where T <: Abstract
 	hem.appendix[k] = SpatialData(what, hem, Inclusive())
 end
 
-macro exclusive(expr)
-	surface = expr.args[1]
-	k = expr.args[2]
-	return :($surface[$k, Exclusive()])
-end
+
 
 
