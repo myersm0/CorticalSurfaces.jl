@@ -25,6 +25,24 @@ Base.getindex(hem::Hemisphere, s::Symbol) =
 Base.getindex(x::SpatialData, mw::MedialWallIndexing, args...) =
 	return getindex(x.data[mw], args...)
 
+function Base.getindex(c::CorticalSurface, s::Symbol, args...)
+	haskey(c[L].appendix, s) && haskey(c[R].appendix, s) || throw(KeyError)
+	a = @views c[L][s, args...]
+	b = @views c[R][s, args...]
+	style = DataStyle(a)
+	DataStyle(b) == style || error("SpatialData structs must have the same DataStyle")
+	return cat(style, a, b)
+end
+
+Base.cat(::IsSquare, a::AbstractMatrix, b::AbstractMatrix) =
+	return cat(a, b; dims = 1:2)
+
+Base.cat(::IsScalarList, a::Vector, b::Vector) = 
+	return [a; b]
+
+Base.cat(::IsNestedList, a::Vector, b::Vector) =
+	return [a; [x .+ size(a, 1) for x in b]]
+
 "Get the number of vertices of a Hemisphere, `Exclusive()` or `Inclusive()` of medial wall"
 Base.size(hem::Hemisphere, mw::MedialWallIndexing) = hem.size[mw]
 
@@ -101,7 +119,5 @@ function Base.setindex!(hem::Hemisphere, what::T, k::Symbol) where T <: Abstract
 	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
 	hem.appendix[k] = SpatialData(what, hem, Inclusive())
 end
-
-
 
 
