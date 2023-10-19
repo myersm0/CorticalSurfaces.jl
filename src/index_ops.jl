@@ -44,12 +44,3 @@ function trim(x::Union{AbstractRange, Vector}, surface::SurfaceSpace)
 	return x[vertices(surface, Exclusive())]
 end
 
-
-# ===== some macros for convenience =====
-
-macro collapse(expr)
-	return :(collapse($expr, $(esc(expr.args[2]))))
-end
-
-
-

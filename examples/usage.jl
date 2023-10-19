@@ -33,10 +33,6 @@ hems = Dict(
 	for hem in LR
 )
 
-# optional: add additional spatial information, such as adjacency lists:
-hems[L][:neighbors] = make_adjacency_list(hems[L])
-hems[R][:neighbors] = make_adjacency_list(hems[R])
-
 # get the vertex indices of the R hem, inclusive of medial wall by default:
 vertices(hems[R])
 
@@ -75,7 +71,17 @@ size(c) == (size(c[L]) + size(c[R])) # true
 size(c, Exclusive())
 size(c, Exclusive()) == (size(c[L], Exclusive()) + size(c[R], Exclusive())) # true
 
-@collapse vertices(c, Inclusive())
+# sometimes you want vertex indices that will map back to a medial wall-less 
+# CIFTI file (containing functional data for example):
+@collapse vertices(c)
+
+# optionally add additional spatial information, such as adjacency lists:
+c[L][:neighbors] = make_adjacency_list(hems[L])
+c[R][:neighbors] = make_adjacency_list(hems[R])
+
+@exclusive c[L][:neighbors]
+
+
 
 
 
