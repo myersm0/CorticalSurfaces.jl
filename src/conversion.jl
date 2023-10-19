@@ -13,6 +13,3 @@ function GeometryBasics.Mesh(hem::Hemisphere)
 end
 
 
-
-
-
