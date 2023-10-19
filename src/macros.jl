@@ -8,7 +8,7 @@ macro exclusive(expr)
 end
 
 macro collapse(expr)
-	return :(collapse($expr, $(esc(expr.args[2]))))
+	return collapse(:($expr), :($(esc(expr.args[2]))))
 end
 
 
