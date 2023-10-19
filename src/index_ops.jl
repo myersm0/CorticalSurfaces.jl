@@ -51,8 +51,5 @@ macro collapse(expr)
 	return :(collapse($expr, $(esc(expr.args[2]))))
 end
 
-macro expand(expr)
-	return :(expand($expr, $(esc(expr.args[2]))))
-end
 
 

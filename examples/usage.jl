@@ -51,19 +51,29 @@ vertices(hems[R], Bilateral(), Exclusive()) # doesn't work yet; see below
 # now put the two hemispheres together inside a single CorticalSurface struct:
 c = CorticalSurface(hems[L], hems[R])
 
-# Note that c now contains both Hemisphere structs, which are each now slightly
-# modified because we have new information: now that they're bundled into
-# a single struct c, the two hemispheres can know about each other, and so we now 
-# have the information that we need in order to do things like index into the 
-# hemispheres bilaterally if needed:
+# Now c contains both Hemisphere structs, which are each now slightly
+# modified because we have new information: the two hemispheres now know
+# about each other, and so we now have the information that we need in order 
+# to do things like index into the hemispheres bilaterally if needed:
 vertices(c[R], Bilateral(), Exclusive()) # now it works
 
-# You can also get vertices over the entire CorticalSurface struct (i.e. both hems):
+# You can also get vertex indices relative to the entire CorticalSurface struct 
+# (i.e. both hems consecutively numbered, instead of just each hem individaully):
 vertices(c)
 vertices(c, Exclusive())
 
 # note the equivalence:
 vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
+
+# similarly you can get the sizes of the hemispheres (number of vertices)
+# individuall or combined:
+size(c)
+size(c) == (size(c[L]) + size(c[R])) # true
+
+# or pass in optional Exclusive() arg to specify that you want the number of vertices
+# exclusive of medial wall:
+size(c, Exclusive())
+size(c, Exclusive()) == (size(c[L], Exclusive()) + size(c[R], Exclusive())) # true
 
 @collapse vertices(c, Inclusive())
 

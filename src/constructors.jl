@@ -93,7 +93,6 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 		ExpandMW => [
 			lhem.remap[ExpandMW];
 			rhem.remap[ExpandMW] .+ size(lhem, Inclusive())
-				[x == 0 ? 0 : size(lhem, Inclusive()) for x in rhem.remap[ExpandMW]]
 		],
 	)
 	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
