@@ -1,9 +1,6 @@
 
 export make_adjacency_matrix, make_adjacency_list
 
-using SparseArrays
-using Chain
-
 """
 	 make_adjacency_matrix(neighbors)
 
