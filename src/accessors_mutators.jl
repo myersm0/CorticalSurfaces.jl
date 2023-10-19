@@ -2,15 +2,24 @@
 export size, getindex, append!, coordinates, vertices
 
 "Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
-Base.getindex(c::CorticalSurface, h::BrainStructure) =
-	return haskey(c.hems, h) ? c.hems[h] : nothing
+function Base.getindex(c::CorticalSurface, h::BrainStructure)
+	haskey(c.hems, h) || throw(KeyError)
+	return c.hems[h]
+end
 
 "Access supplementary spatial data `s` for a `Hemisphere`"
-Base.getindex(hem::Hemisphere, s::Symbol) =
-	return haskey(hem.appendix, s) ? hem.appendix[s].data[Inclusive()] : nothing
+function Base.getindex(hem::Hemisphere, s::Symbol, ::Inclusive)
+	haskey(hem.appendix, s) || throw(KeyError)
+	return hem.appendix[s].data[Inclusive()]
+end
 
-Base.getindex(hem::Hemisphere, s::Symbol, mw::MedialWallIndexing) =
-	return haskey(hem.appendix, s) ? hem.appendix[s].data[mw] : nothing
+function Base.getindex(hem::Hemisphere, s::Symbol, ::Exclusive)
+	haskey(hem.appendix, s) || throw(KeyError)
+	return hem.appendix[s].data[Exclusive()]
+end
+
+Base.getindex(hem::Hemisphere, s::Symbol) =
+	return getindex(hem, s, Inclusive())
 
 "Index into a `Hemisphere`'s supplementary spatial data"
 Base.getindex(x::SpatialData, mw::MedialWallIndexing, args...) =
