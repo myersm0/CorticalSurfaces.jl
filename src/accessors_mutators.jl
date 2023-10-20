@@ -1,5 +1,5 @@
 
-export size, getindex, append!, coordinates, vertices
+export size, getindex, setindex!, append!, coordinates, vertices
 
 "Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
 function Base.getindex(c::CorticalSurface, h::BrainStructure)
