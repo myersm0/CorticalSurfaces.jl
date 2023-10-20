@@ -1,11 +1,9 @@
 # CorticalSurfaces
 In working with spatial coordinates and related information in surface-space analysis of the cerebral cortex, opportunities for error can arise from the variety of ways in which you may need to index into that spatial information. For example, usually functional data in a CIFTI file will omit the medial wall vertices; but when reconciling that data with spatial information from a GIFTI file, you need to do the math and book-keeping of mapping the set of medial wall-exclusive vertices to the other set of -inclusive vertices or vice versa. Another case is when you have some data indexed per-hemisphere but other data is indexed whole-brain. Or you may face both obstacles at the same time. If you get it wrong, you may never know it.
 
-This package provides an interface for improving safety and readability of managing such operations and for encapsulating spatial properties pertaining to a surface representation(s) of the cortex, including arbitrary user-supplied data such as distance matrices and adjacency info. It was designed with CIFTI/GIFTI files in mind and the so-called fs_LR 32k coordinate space, though it could work in other contexts too.
+This package provides an interface for improving safety and readability of managing such operations and for encapsulating spatial properties pertaining to a surface representation(s) of the cortex, including arbitrary user-supplied data such as distance matrices and adjacency info. It was designed with CIFTI/GIFTI files in mind and the so-called fsLR 32k coordinate space, though it should work in any context where the same basic ideas apply.
 
-This package supplies the backbone for a set of algorithms for operating on [parcels](https://github.com/myersm0/Myers-Labonte_parcellation) on the cortical surface, [CorticalParcels.jl](https://github.com/myersm0/CorticalParcels.jl).
-
-An additional goal, not yet implemented, is to provide some GLMakie recipes for 3d visualization of brain surfaces, inspired by [Connectome Workbench](https://humanconnectome.org/software/connectome-workbench)'s wb_view but with a programmatic interface and the ability to add arbitrary graphical elements (such as text annotations).
+This package supplies the backbone for a set of algorithms for operating on parcels on the cortical surface, [CorticalParcels.jl](https://github.com/myersm0/CorticalParcels.jl).
 
 ## Performance and efficiency
 The implementation priorities are, in order:
@@ -23,10 +21,12 @@ Pkg.add("CorticalSurfaces")
 ```
 
 ## Usage
+A demo of the basic functionality is provided in `examples/demo.jl`, but see below for the main points.
+
 ### Constructors
 To create a Hemisphere struct that will encapsulate spatial information, two pieces of information are required: 
 - a numeric `Matrix` of coordinates having 3 columns (x, y, z)
-- a `BitVector` or `Vector{Bool}`, the length of which is equal to the number of rows in the coordinate `Matrix`, indicating the presence of the medial wall (`true` if the vertex is part of the medial wall, `false` otherwise)
+- a `BitVector`, the length of which is equal to the number of rows in the coordinate `Matrix`, indicating the presence of the medial wall (`true` if the vertex is part of the medial wall, `false` otherwise)
 
 For example, to create two hemispheres (with nonsensical coordinate and medial wall information, in this case, but actual data for these things could come from a GIFTI file, a CSV file, etc): 
 ```
@@ -47,12 +47,12 @@ c = CorticalSurface(hemL, hemR)
 The following are some of the operations currently supported:
 ```
 # get coordinates from both hemispheres combined
-coordinates(c, Exclusive()) # not including medial wall vertices
 coordinates(c, Inclusive()) # including medial wall vertices
+coordinates(c, Exclusive()) # not including medial wall vertices
 
 # get coordinates from just the right hemisphere
-coordinates(c[R], Exclusive()) # not including medial wall vertices
 coordinates(c[R], Inclusive()) # including medial wall vertices
+coordinates(c[R], Exclusive()) # not including medial wall vertices
 
 # as above, but don't get the coordinates, just get a vector of vertex indices
 vertices(c[R], Inclusive())
@@ -69,15 +69,12 @@ size(c[L], Inclusive()) # number of vertices in just the left hemisphere
 ```
 # create a "distance matrix" for the right hemisphere
 nverts = size(c[R], Inclusive())
-nonsensical_distance_matrix = rand(UInt8, nverts, nverts)
-
-# add it to the available spatial information for that hemisphere,
-append!(c[R], :distance_matrix, nonsensical_distance_matrix)
+c[R][:distance_matrix] = nrand(UInt8, nverts, nverts)
 
 # index into the distance matrix
-c[R][:distance_matrix][50000:51000, 42001:42009]
+c[R][:distance_matrix][10000:21000, 2001:4009]
 ```
-Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface struct to which it is "appended." (A current limitation is that these spatial data items must having indexing *inclusive* of medial wall vertices, but I aim to remove this limitation in a future version.)
+Any supplementary spatial data, such as the distance matrix above, must have spatial dimension(s) that are consistent with those of the surface geometry of the Hemisphere or CorticalSurface struct to which it is "appended." (A current limitation is that these spatial data items must having indexing *inclusive* of medial wall vertices.)
 
 ### Functions to adjust for presense or absense of medial wall
 To map a set of medial wall-inclusive vertices to a set of -exclusive vertices -- in other words, to shorten or collapse the indices -- a function called `collapse` is provided, as well as `expand` to handle the opposite case. For example, for a surface geometry that has 29696 or 32494 vertices (exclusive or inclusive of medial wall, respectively):
