@@ -26,8 +26,8 @@ struct IsScalarList <: DataStyle end
 struct IsNestedList <: DataStyle end
 
 abstract type MatrixStyle <: DataStyle end
-struct IsSquare <: DataStyle end
-struct IsRectangular <: DataStyle end
+struct IsSquare <: MatrixStyle end
+struct IsRectangular <: MatrixStyle end
 
 DataStyle(v::AbstractVector) = ListStyle(v)
 DataStyle(m::AbstractMatrix) = MatrixStyle(m)
