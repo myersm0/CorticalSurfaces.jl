@@ -9,20 +9,21 @@ abstract type SurfaceSpace end
 
 Base.@kwdef struct Hemisphere <: SurfaceSpace
 	coordinates::Dict{MedialWallIndexing, Matrix{T}} where T <: Real
-	triangles::Union{Nothing, Matrix{Int}}
 	medial_wall::BitVector
 	vertices::Dict{IndexMapping, Vector{Int}}
-	appendix::Dict{Symbol, SpatialData} = 
-		Dict{Symbol, SpatialData}()
+	triangles::Union{Nothing, Matrix{Int}}
 	size::Dict{MedialWallIndexing, Int} = Dict(
 		Exclusive() => sum(.!medial_wall),
 		Inclusive() => length(medial_wall)
 	)
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
+	appendix::Dict{Symbol, SpatialData} = 
+		Dict{Symbol, SpatialData}()
 end
 
 struct CorticalSurface <: SurfaceSpace
 	hems::Dict{BrainStructure, Hemisphere}
+	medial_wall::BitVector
 	vertices::Dict{MedialWallIndexing, Vector}
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
 end

@@ -9,8 +9,8 @@ using CIFTI
 # just for demonstration purposes: we can create a Hemisphere from any
 # xyz coordinates and medial wall information (nonsensical in this case)
 coords = randn(32492, 3)
-medial_wall = rand(Bool, 32492)
-hem = Hemisphere(coords, medial_wall)
+mw = rand(Bool, 32492)
+hem = Hemisphere(coords, mw)
 
 # now to create a meaningful Hemisphere struct from real data, we'll first
 # load in some spatial data to use:
@@ -79,6 +79,12 @@ size(c)
 # exclusive of medial wall:
 size(c, Exclusive())
 @assert size(c, Exclusive()) == (size(c[L], Exclusive()) + size(c[R], Exclusive()))
+
+# you can get the BitVector denoting medial wall membership, either for a single
+# hemisphere or for both together:
+medial_wall(c[L])
+medial_wall(c)
+@assert medial_wall(c) == vcat(medial_wall(c[L]), medial_wall(c[R]))
 
 # sometimes you want vertex indices that will map back to a medial wall-less 
 # CIFTI file (containing functional data for example):

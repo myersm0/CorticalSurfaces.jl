@@ -60,7 +60,7 @@ Base.size(hem::Hemisphere, mw::MedialWallIndexing) = hem.size[mw]
 "Get the number of vertices of a `Hemisphere`, `Inclusive()` of medial wall"
 Base.size(hem::Hemisphere) = size(hem, Inclusive())
 
-"Get the number of vertices of a `Hemisphere`"
+"Get the number of vertices of a `CorticalSurface`"
 Base.size(c::CorticalSurface, args...) = size(c[L], args...) + size(c[R], args...)
 
 "Get coordinates from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
@@ -91,4 +91,7 @@ vertices(c::CorticalSurface) = c.vertices[Inclusive()]
 
 "Get vertex numbers from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
 vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
+
+"Get the medial wall `BitVector` from a `Hemisphere` or `CorticalSurface`"
+medial_wall(s::SurfaceSpace) = s.medial_wall
 

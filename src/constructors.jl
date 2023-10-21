@@ -74,6 +74,7 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 		rhem.vertices[(Ipsilateral(), Exclusive())] .+ nvertsL
 	rhem.vertices[(Bilateral(), Inclusive())] = 
 		rhem.vertices[(Ipsilateral(), Inclusive())] .+ nvertsL
+	mw = [lhem.medial_wall; rhem.medial_wall]
 	vertices = Dict(
 		Inclusive() => union(
 			lhem.vertices[(Bilateral(), Inclusive())],
@@ -95,7 +96,7 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 			rhem.remap[ExpandMW] .+ size(lhem, Inclusive())
 		],
 	)
-	CorticalSurface(Dict(L => lhem, R => rhem), vertices, remap)
+	CorticalSurface(Dict(L => lhem, R => rhem), mw, vertices, remap)
 end
 
 function SpatialData(mat::AbstractMatrix, hem::Hemisphere, ::Inclusive)
