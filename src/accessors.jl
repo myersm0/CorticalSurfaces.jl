@@ -71,7 +71,7 @@ coordinates(s::SurfaceSpace) = coordinates(s, Inclusive())
 
 "Get coordinates from a Vector of Hemispheres"
 coordinates(v::Vector{Hemisphere}, args...) = 
-	vcat([coordinates(h, args...) for h in v]...)
+	hcat([coordinates(h, args...) for h in v]...)
 
 "Get vertex numbers from a `Hemisphere`, `Inclusive()` of medial wall"
 vertices(hem::Hemisphere) = hem.vertices[(Ipsilateral(), Inclusive())]

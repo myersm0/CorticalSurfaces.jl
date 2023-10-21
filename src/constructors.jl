@@ -9,9 +9,25 @@ function Hemisphere(
 		coords::Matrix, medial_wall::Union{Vector{Bool}, BitVector}; 
 		triangles::Union{Nothing, Matrix} = nothing
 	)
-	size(coords, 1) == length(medial_wall) || error(DimensionMismatch)
+	nvertices = length(medial_wall)
+
+	# expect coords to have 3 rows and ncolumns == nvertices; otherwise, transpose
+	if size(coords, 1) == nvertices && size(coords, 2) == 3
+		coords = coords'
+	end
+	size(coords, 1) == 3 || error(DimensionMismatch)
+	size(coords, 2) == length(medial_wall) || error(DimensionMismatch)
+
+	if !isnothing(triangles)
+		# expect triangle to have 3 rows and columns >= nvertices; otherwise, transpose
+		if size(triangles, 1) >= nvertices && size(triangles, 2) == 3
+			triangles = triangles'
+		end
+		size(triangles, 1) == 3 || error(DimensionMismatch)
+	end
+
 	coordinates = Dict{MedialWallIndexing, Matrix{eltype(coords)}}(
-		Exclusive() => coords[.!medial_wall, :],
+		Exclusive() => coords[:, .!medial_wall],
 		Inclusive() => coords
 	)
 	nverts = length(medial_wall)
@@ -42,7 +58,7 @@ end
 Make a meaningless, but functional, placeholder `Hemisphere` of a certain size
 """
 function Hemisphere(nvertices::Int)
-	coords = zeros(nvertices, 3)
+	coords = zeros(3, nvertices)
 	medial_wall = falses(nvertices)
 	return Hemisphere(coords, medial_wall)
 end
@@ -55,7 +71,7 @@ from just a `BitVector` representing medial wall membership
 """
 function Hemisphere(medial_wall::BitVector)
 	nvertices = length(medial_wall)
-	coords = zeros(nvertices, 3)
+	coords = zeros(3, nvertices)
 	return Hemisphere(coords, medial_wall)
 end
 
@@ -78,8 +94,8 @@ function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
 	mw = [lhem.medial_wall; rhem.medial_wall]
 
 	coords = Dict{MedialWallIndexing, Matrix{eltype(coordinates(lhem))}}(
-		Exclusive() => vcat(lhem.coordinates[Exclusive()], rhem.coordinates[Exclusive()]),
-		Inclusive() => vcat(lhem.coordinates[Inclusive()], rhem.coordinates[Inclusive()])
+		Exclusive() => hcat(lhem.coordinates[Exclusive()], rhem.coordinates[Exclusive()]),
+		Inclusive() => hcat(lhem.coordinates[Inclusive()], rhem.coordinates[Inclusive()])
 	)
 
 	vertices = Dict(
@@ -117,7 +133,7 @@ function SpatialData(mat::AbstractMatrix, hem::Hemisphere, ::Inclusive)
 	if MatrixStyle(mat) == IsSquare()
 		data[Exclusive()] = mat[excl_verts, excl_verts]
 	else
-		data[Exclusive()] = mat[excl_verts, :]
+		data[Exclusive()] = mat[:, excl_verts]
 	end
 	return SpatialData{T, N}(data)
 end

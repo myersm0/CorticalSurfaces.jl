@@ -25,8 +25,8 @@ nverts_total = nverts_mw + nverts_surface
 	@test size(test, Exclusive()) == nverts_surface
 	@test size(test, Inclusive()) == nverts_total
 
-	@test size(coordinates(test, Inclusive()), 1) == nverts_total
-	@test size(coordinates(test, Exclusive()), 1) == nverts_surface
+	@test size(coordinates(test, Inclusive()), 2) == nverts_total
+	@test size(coordinates(test, Exclusive()), 2) == nverts_surface
 
 	@test vertices(test[L], (Ipsilateral(), Exclusive())) == surf_vertices_L
 	@test vertices(test[R], (Ipsilateral(), Exclusive())) == surf_vertices_R

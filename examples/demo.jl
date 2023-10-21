@@ -68,7 +68,7 @@ vertices(c, Exclusive())
 vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
 
 # The function coordinates() works analogously:
-@assert coordinates(c) == [coordinates(c[L]); coordinates(c[R])]
+@assert coordinates(c) == hcat(coordinates(c[L]), coordinates(c[R]))
 
 # similarly you can get the sizes of the hemispheres (number of vertices)
 # individually or combined:
@@ -98,11 +98,11 @@ collapse(vertices(c), c)
 # those indices back to a CorticalSurface struct c to get the coordinates (for example):
 verts = [99, 999, 9999, 59412]
 expanded_verts = expand(verts, c)
-coordinates(c)[expanded_verts, :]
+coordinates(c)[:, expanded_verts]
 
 # or similarly you can pass the argument Exclusive() to coordinates()
 # and achieve the same thing without first transforming the vertices:
-coordinates(c, Exclusive())[verts, :]
+coordinates(c, Exclusive())[:, verts]
 
 # optionally add supplementary spatial information, such as adjacency lists:
 c[L][:neighbors] = make_adjacency_list(hems[L])

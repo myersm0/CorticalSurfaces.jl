@@ -34,13 +34,13 @@ end
 Make an adjacency list from a 3-column matrix of triangle vertices
 """
 function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
-	size(triangles, 2) == 3 || error("Expected a 3-column matrix of triangle vertices")
+	size(triangles, 1) == 3 || error("Expected a 3-row matrix of triangle vertices")
 	nvertices = size(hem)
 	out = AdjacencyList{Int}(undef, nvertices)
 	Threads.@threads for v in 1:nvertices
 		out[v] =
 			@chain triangles begin
-				filter(x -> v in x, eachrow(_))
+				filter(x -> v in x, eachcol(_))
 				union(_...)
 				setdiff(_, v)
 				sort
