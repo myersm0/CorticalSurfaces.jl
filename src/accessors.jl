@@ -63,15 +63,11 @@ Base.size(hem::Hemisphere) = size(hem, Inclusive())
 "Get the number of vertices of a `CorticalSurface`"
 Base.size(c::CorticalSurface, args...) = size(c[L], args...) + size(c[R], args...)
 
-"Get coordinates from a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall"
-coordinates(hem::Hemisphere, mw::MedialWallIndexing) = hem.coordinates[mw]
+"Get coordinates from a `SurfaceSpace`, `Exclusive()` or `Inclusive()` of medial wall"
+coordinates(s::SurfaceSpace, mw::MedialWallIndexing) = s.coordinates[mw]
 
 "Get coordinates from a `Hemisphere`, `Inclusive()` of medial wall"
-coordinates(hem::Hemisphere) = coordinates(hem, Inclusive())
-
-"Get coordinates from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
-coordinates(c::CorticalSurface, args...) = 
-	vcat([coordinates(c[hem], args...) for hem in LR]...)
+coordinates(s::SurfaceSpace) = coordinates(s, Inclusive())
 
 "Get coordinates from a Vector of Hemispheres"
 coordinates(v::Vector{Hemisphere}, args...) = 

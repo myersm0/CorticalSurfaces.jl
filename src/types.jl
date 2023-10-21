@@ -23,6 +23,7 @@ end
 
 struct CorticalSurface <: SurfaceSpace
 	hems::Dict{BrainStructure, Hemisphere}
+	coordinates::Dict{MedialWallIndexing, Matrix{T}} where T <: Real
 	medial_wall::BitVector
 	vertices::Dict{MedialWallIndexing, Vector}
 	remap::Dict{Pair{MedialWallIndexing, MedialWallIndexing}, Vector{Int}}
