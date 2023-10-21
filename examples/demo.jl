@@ -68,17 +68,17 @@ vertices(c, Exclusive())
 vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
 
 # The function coordinates() works analogously:
-coordinates(c) == [coordinates(c[L]); coordinates(c[R])]
+@assert coordinates(c) == [coordinates(c[L]); coordinates(c[R])]
 
 # similarly you can get the sizes of the hemispheres (number of vertices)
 # individually or combined:
 size(c)
-size(c) == (size(c[L]) + size(c[R])) # true
+@assert size(c) == (size(c[L]) + size(c[R]))
 
 # or pass in optional Exclusive() arg to specify that you want the number of vertices
 # exclusive of medial wall:
 size(c, Exclusive())
-size(c, Exclusive()) == (size(c[L], Exclusive()) + size(c[R], Exclusive())) # true
+@assert size(c, Exclusive()) == (size(c[L], Exclusive()) + size(c[R], Exclusive()))
 
 # sometimes you want vertex indices that will map back to a medial wall-less 
 # CIFTI file (containing functional data for example):
@@ -121,6 +121,7 @@ c[R][:A] = make_adjacency_matrix(hems[R])
 # cases; but be aware the that the I and III quadrants will be all zeros:
 c[:A] 
 c[:A, Exclusive()] 
+@exclusive c[:A] # equivalent to the above
 
 # In the case of an adjacency matrix, as here, that zero-padding is probably what we
 # want, but if it's something else like a distance matrix, then you need to either 
@@ -129,7 +130,7 @@ c[:A, Exclusive()]
 
 # This concept may also apply to Vector spatial data, such as an adjacency list:
 c[:neighbors]
-c[:neighbors, Exclusive()]
+@exclusive c[:neighbors]
 
 # A performance warning about accessing CorticalSurface data like this:
 # if you need to *frequently* access bilateral spatial data like in the above few 
