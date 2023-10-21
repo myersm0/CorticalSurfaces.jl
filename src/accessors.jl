@@ -1,5 +1,5 @@
 
-export size, getindex, setindex!, append!, coordinates, vertices
+export size, getindex, coordinates, vertices
 
 "Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
 function Base.getindex(c::CorticalSurface, h::BrainStructure)
@@ -91,44 +91,4 @@ vertices(c::CorticalSurface) = c.vertices[Inclusive()]
 
 "Get vertex numbers from a `CorticalSurface`, `Exclusive()` or `Inclusive()` of medial wall"
 vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
-
-function check_size(
-		::IsSquare, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
-	)
-	return all(size(what) .== size(hem, indexing))
-end
-
-function check_size(
-		::IsRectangular, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
-	)
-	return size(what, 1) == size(hem, indexing)
-end
-
-function check_size(
-		::IsScalarList, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
-	)
-	return length(what) == size(hem, indexing)
-end
-
-function check_size(
-		::IsNestedList, hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing
-	)
-	hem_size = size(hem, indexing)
-	return length(what) == hem_size && all([all(1 .<= x .<= hem_size) for x in what])
-end
-
-function check_size(hem::Hemisphere, what::AbstractArray, indexing::MedialWallIndexing)
-	return check_size(DataStyle(what), hem, what, indexing)
-end
-
-function Base.append!(hem::Hemisphere, k::Symbol, what::T) where T <: AbstractArray
-	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
-	hem.appendix[k] = SpatialData(what, hem, Inclusive())
-end
-
-function Base.setindex!(hem::Hemisphere, what::T, k::Symbol) where T <: AbstractArray
-	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
-	hem.appendix[k] = SpatialData(what, hem, Inclusive())
-end
-
 
