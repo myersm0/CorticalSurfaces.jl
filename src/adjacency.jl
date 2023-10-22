@@ -40,7 +40,11 @@ function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
 	Threads.@threads for v in 1:nvertices
 		out[v] =
 			@chain triangles begin
-				filter(x -> v in x, eachcol(_))
+				try
+					filter(x -> v in x, eachcol(_))
+				catch e # workaround for compat with Julia 1.8:
+					Iterators.filter(x -> v in x, eachcol(_)) # slow
+				end
 				union(_...)
 				setdiff(_, v)
 				sort
