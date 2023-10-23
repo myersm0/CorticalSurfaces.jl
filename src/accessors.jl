@@ -1,5 +1,5 @@
 
-export size, getindex, coordinates, vertices
+export size, getindex, coordinates, vertices, medial_wall, keys, haskey
 
 "Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
 function Base.getindex(c::CorticalSurface, h::BrainStructure)
@@ -90,4 +90,14 @@ vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
 
 "Get the medial wall `BitVector` from a `Hemisphere` or `CorticalSurface`"
 medial_wall(s::SurfaceSpace) = s.medial_wall
+
+Base.keys(hem::Hemisphere) = keys(hem.appendix)
+
+Base.haskey(hem::Hemisphere, k::Symbol) = haskey(hem.appendix, k)
+
+Base.keys(c::CorticalSurface) = intersect(keys(c[L]), keys(c[R]))
+
+Base.haskey(c::CorticalSurface, k::Symbol) = k in keys(c)
+
+
 

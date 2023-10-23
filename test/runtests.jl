@@ -41,9 +41,17 @@ nverts_total = nverts_mw + nverts_surface
 		@test test[hem][:identity] == identity
 		test[hem][:vertexlist] = 1:nverts
 		@test test[hem][:vertexlist] == 1:nverts
+		@test haskey(test[hem], :identity)
+		@test haskey(test[hem], :vertexlist)
+		@test length(keys(test[hem])) == 2
 	end
+	@test haskey(test, :identity)
+	@test haskey(test, :vertexlist)
+	@test length(keys(test)) == 2
 
 	test[L][:neighbors] = neighbors
+	@test :neighbors in setdiff(keys(test[L]), keys(test))
+
 	a = vertices(test[L], (Ipsilateral(), Exclusive()))
 	test_vert = 22878
 	inds = test[L][:neighbors][test_vert]
