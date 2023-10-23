@@ -100,4 +100,3 @@ Base.keys(c::CorticalSurface) = intersect(keys(c[L]), keys(c[R]))
 Base.haskey(c::CorticalSurface, k::Symbol) = k in keys(c)
 
 
-

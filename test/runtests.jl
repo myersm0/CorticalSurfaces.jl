@@ -90,12 +90,12 @@ nverts_total = nverts_mw + nverts_surface
 
 	temp_inds = pad(1:59412, test)
 	@test length(temp_inds) == size(test)
-	@test sum(temp_inds .== 0) == sum(test[L].medial_wall + test[R].medial_wall)
+	@test sum(temp_inds .== 0) == sum(medial_wall(test))
 	@test setdiff(temp_inds, 0) == 1:59412
 
 	temp_inds = trim(1:64984, test)
 	@test length(temp_inds) == size(test, Exclusive())
-	@test all([test[L].medial_wall; test[R].medial_wall][temp_inds] .== 0)
-	@test !any([test[L].medial_wall; test[R].medial_wall][temp_inds] .== 1)
+	@test all(medial_wall(test)[temp_inds] .== 0)
+	@test !any(medial_wall(test)[temp_inds] .== 1)
 end
 

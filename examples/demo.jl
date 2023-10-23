@@ -112,7 +112,7 @@ c[R][:neighbors] = make_adjacency_list(hems[R])
 c[L][:neighbors]
 
 # or, to exclude medial wall vertices:
-@exclusive c[L][:neighbors]
+c[L][:neighbors, Exclusive()]
 
 # carefully take a look at outputs from the above and observe what @exclusive did:
 # - it reduced the elements of the adjacency list to include only non-medial wall elements
@@ -127,7 +127,6 @@ c[R][:A] = make_adjacency_matrix(hems[R])
 # cases; but be aware the that the I and III quadrants will be all zeros:
 c[:A] 
 c[:A, Exclusive()] 
-@exclusive c[:A] # equivalent to the above
 
 # In the case of an adjacency matrix, as here, that zero-padding is probably what we
 # want, but if it's something else like a distance matrix, then you need to either 
@@ -136,7 +135,7 @@ c[:A, Exclusive()]
 
 # This concept may also apply to Vector spatial data, such as an adjacency list:
 c[:neighbors]
-@exclusive c[:neighbors]
+c[:neighbors, Exclusive()]
 
 # A performance warning about accessing CorticalSurface data like this:
 # if you need to *frequently* access bilateral spatial data like in the above few 
