@@ -1,18 +1,31 @@
 
 export size, getindex, coordinates, vertices, medial_wall, keys, haskey
 
-"Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`"
+"""
+    getindex(c, h)
+
+Index into the `L` or `R` `Hemisphere` of a `CorticalSurface`
+"""
 function Base.getindex(c::CorticalSurface, h::BrainStructure)
 	haskey(c.hems, h) || throw(KeyError)
 	return c.hems[h]
 end
 
-"Access supplementary spatial data `s` for a `Hemisphere`"
+"""
+	 getindex(hem, s, Inclusive())
+
+Access supplementary spatial data `s` for a `Hemisphere`, inclusive of medial wall
+"""
 function Base.getindex(hem::Hemisphere, s::Symbol, ::Inclusive)
 	haskey(hem.appendix, s) || throw(KeyError)
 	return hem.appendix[s].data[Inclusive()]
 end
 
+"""
+	 getindex(hem, s, Exclusive())
+
+Access supplementary spatial data `s` for a `Hemisphere`, exclusive of medial wall
+"""
 function Base.getindex(hem::Hemisphere, s::Symbol, ::Exclusive)
 	haskey(hem.appendix, s) || throw(KeyError)
 	return hem.appendix[s].data[Exclusive()]
@@ -54,7 +67,11 @@ Base.cat(::IsScalarList, a::Vector, b::Vector) =
 Base.cat(::IsNestedList, a::Vector, b::Vector) =
 	return [a; [x .+ size(a, 1) for x in b]]
 
-"Get the number of vertices of a Hemisphere, `Exclusive()` or `Inclusive()` of medial wall"
+"""
+    size(hem, mw)
+
+Get the number of vertices of a `Hemisphere`, `Exclusive()` or `Inclusive()` of medial wall
+"""
 Base.size(hem::Hemisphere, mw::MedialWallIndexing) = hem.size[mw]
 
 "Get the number of vertices of a `Hemisphere`, `Inclusive()` of medial wall"
@@ -91,12 +108,33 @@ vertices(c::CorticalSurface, mw::MedialWallIndexing) = c.vertices[mw]
 "Get the medial wall `BitVector` from a `Hemisphere` or `CorticalSurface`"
 medial_wall(s::SurfaceSpace) = s.medial_wall
 
+"""
+    keys(hem)
+
+Get the names of the supplementary data elements, if any, that exist for a `Hemisphere`
+"""
 Base.keys(hem::Hemisphere) = keys(hem.appendix)
 
+"""
+    haskey(hem, k)
+
+Check whether a `Hemisphere` has the symbol `k` among its supplementary spatial data
+"""
 Base.haskey(hem::Hemisphere, k::Symbol) = haskey(hem.appendix, k)
 
+"""
+    keys(c)
+
+Get the names of the supplementary data that exist for both hemispheres 
+of a `CorticalSurface`
+"""
 Base.keys(c::CorticalSurface) = intersect(keys(c[L]), keys(c[R]))
 
+"""
+    haskey(c, k)
+
+Check whether a `CorticalSurface` has the symbol `k` among its supplementary spatial data
+"""
 Base.haskey(c::CorticalSurface, k::Symbol) = k in keys(c)
 
 

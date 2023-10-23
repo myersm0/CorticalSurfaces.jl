@@ -45,10 +45,6 @@ vertices(hems[R])
 # or as above, but excluding medial wall:
 vertices(hems[R], Exclusive())
 
-# ideally we'd like to also be able to index into hemispheres bilaterally sometimes;
-# but this doesn't work *yet*, because while the left and right hemispheres are
-# both defined already, they don't know about each other yet
-
 # now put the two hemispheres together inside a single CorticalSurface struct:
 c = CorticalSurface(hems[L], hems[R])
 
@@ -65,7 +61,7 @@ vertices(c)
 vertices(c, Exclusive())
 
 # note the equivalence:
-vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
+@assert vertices(c) == [vertices(c[L]); vertices(c[R], Bilateral(), Inclusive())]
 
 # The function coordinates() works analogously:
 @assert coordinates(c) == hcat(coordinates(c[L]), coordinates(c[R]))
@@ -85,6 +81,7 @@ size(c, Exclusive())
 medial_wall(c[L])
 medial_wall(c)
 @assert medial_wall(c) == vcat(medial_wall(c[L]), medial_wall(c[R]))
+@assert sum(medial_wall(c)) == size(c) - size(c, Exclusive())
 
 # sometimes you want vertex indices that will map back to a medial wall-less 
 # CIFTI file (containing functional data for example):
@@ -114,7 +111,7 @@ c[L][:neighbors]
 # or, to exclude medial wall vertices:
 c[L][:neighbors, Exclusive()]
 
-# carefully take a look at outputs from the above and observe what @exclusive did:
+# carefully take a look at outputs from the above and observe what Exclusive() did:
 # - it reduced the elements of the adjacency list to include only non-medial wall elements
 # - it also modified the indices within each element by adjusting for absense of medial wall
 
