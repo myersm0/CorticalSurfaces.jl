@@ -11,7 +11,7 @@ JLD = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
-CIFTI = "1.0.0"
+CIFTI = "1"
 Chain = "0.5"
 GeometryBasics = "0.4.9"
 JLD = "0.13"
