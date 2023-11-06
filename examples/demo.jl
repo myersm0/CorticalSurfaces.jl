@@ -102,8 +102,8 @@ coordinates(c)[:, expanded_verts]
 coordinates(c, Exclusive())[:, verts]
 
 # optionally add supplementary spatial information, such as adjacency lists:
-c[L][:neighbors] = make_adjacency_list(hems[L])
-c[R][:neighbors] = make_adjacency_list(hems[R])
+c[L][:neighbors] = make_adjacency_list(c[L])
+c[R][:neighbors] = make_adjacency_list(c[R])
 
 # now access the supplementary spatial data you supplied:
 c[L][:neighbors]
