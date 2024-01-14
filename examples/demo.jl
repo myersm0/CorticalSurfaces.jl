@@ -2,6 +2,7 @@
 using CorticalSurfaces
 using JLD
 using CIFTI
+using Pkg.Artifacts
 
 # CIFTI.jl supplies a shorthand we'll be using throughout: 
 # constants L, R, and LR for referring to left, right, or both hemispheres
@@ -14,7 +15,7 @@ hem = Hemisphere(coords, mw)
 
 # now to create a meaningful Hemisphere struct from real data, we'll first
 # load in some spatial data to use:
-data_dir = joinpath(dirname(@__FILE__), "..", "data")
+data_dir = artifact"CIFTI_test_files"
 MSC01_file = joinpath(data_dir, "MSC01.jld")
 MSC01 = load(MSC01_file)
 
