@@ -4,6 +4,7 @@ module CorticalSurfaces
 using CIFTI
 using Chain
 using SparseArrays
+import Graphs
 
 const AdjacencyList = Vector{Vector{T}} where T <: Integer
 const AdjacencyMatrix = AbstractMatrix{Bool}
@@ -36,9 +37,11 @@ include("show.jl")
 include("conversion.jl")
 
 include("adjacency.jl")
-export make_adjacency_matrix, make_adjacency_list
 export make_adjacency_matrix!, make_adjacency_list!
 export adjacency_matrix, adjacency_list
+
+include("graphs.jl")
+export graph, initialize_graph!
 
 end
 

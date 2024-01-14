@@ -29,8 +29,9 @@ function make_adjacency_matrix(hem::Hemisphere)
 end
 
 function make_adjacency_matrix!(hem::Hemisphere)
+	haskey(hem, :A) && return
 	hem[:A] = make_adjacency_matrix(hem)
-	return nothing
+	return
 end
 
 """
@@ -65,8 +66,9 @@ function make_adjacency_list(hem::Hemisphere)
 end
 
 function make_adjacency_list!(hem::Hemisphere)
+	haskey(hem, :neighbors) && return
 	hem[:neighbors] = make_adjacency_list(hem)
-	return nothing
+	return
 end
 
 function make_adjacency_list!(c::CorticalSurface)

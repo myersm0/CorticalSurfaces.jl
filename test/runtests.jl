@@ -56,12 +56,12 @@ nverts_total = nverts_mw + nverts_surface
 	@test haskey(c, :vertexlist)
 	@test length(keys(c)) == 2
 
-	c[L][:neighbors] = neighbors
-	@test :neighbors in setdiff(keys(c[L]), keys(c))
+	c[L][:test] = neighbors
+	@test :test in setdiff(keys(c[L]), keys(c))
 
 	a = vertices(c[L], (Ipsilateral(), Exclusive()))
 	test_vert = 22878
-	inds = c[L][:neighbors][test_vert]
+	inds = c[L][:test][test_vert]
 	temp_inds = collapse(inds, c[L])
 	@test length(temp_inds) == 6
 	@test all(x in [21076, 21053, 21054, 21078, 21100, 21099] for x in temp_inds)
@@ -109,13 +109,13 @@ nverts_total = nverts_mw + nverts_surface
 end
 
 @testset "adjacency tests" begin
-	c[L][:neighbors] = make_adjacency_list(c[L])
-	c[R][:neighbors] = make_adjacency_list(c[R])
-	@test c[L][:neighbors] == c[R][:neighbors] == [sort(x) for x in neighbors]
+	make_adjacency_list!(c[L])
+	make_adjacency_list!(c[R])
+	@test adjacency_list(c[L]) == adjacency_list(c[R]) == [sort(x) for x in neighbors]
 	@test size(c[:neighbors], 1) == size(neighbors, 1) * 2
 	@test size(c[:neighbors, Exclusive()], 1) == size(c, Exclusive())
-	c[L][:A] = make_adjacency_matrix(c[L])
-	c[R][:A] = make_adjacency_matrix(c[R])
+	make_adjacency_matrix!(c[L])
+	make_adjacency_matrix!(c[R])
 	@test allequal([size(c[:A])..., size(c)])
 	@test allequal([size(c[:A, Exclusive()])..., size(c, Exclusive())])
 end
