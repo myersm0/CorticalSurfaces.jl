@@ -68,12 +68,10 @@ function make_adjacency_list!(hem::Hemisphere)
 end
 
 function adjacency_list(hem::Hemisphere)
-	haskey(hem, :neighbors) || make_adjacency_list!(hem)
 	return hem[:neighbors]
 end
 
 function adjacency_matrix(hem::Hemisphere)
-	haskey(hem, :A) || make_adjacency_matrix!(hem)
 	return hem[:A]
 end
 
