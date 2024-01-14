@@ -6,6 +6,7 @@ end
 abstract type SurfaceSpace end
 
 @kwdef struct Hemisphere <: SurfaceSpace
+	label::BrainStructure
 	coordinates::Dict{MedialWallIndexing, Matrix{<:Real}}
 	medial_wall::BitVector
 	vertices::Dict{IndexMapping, Vector{Int}}

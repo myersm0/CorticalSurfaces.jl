@@ -20,8 +20,8 @@ surf_vertices_L = findall(.!mwL)
 surf_vertices_R = findall(.!mwR)
 surf_vertices_LR = [surf_vertices_L; maximum(surf_vertices_L) .+ surf_vertices_R]
 c = CorticalSurface(
-	Hemisphere(surfL, mwL; triangles = trianglesL), 
-	Hemisphere(surfR, mwR; triangles = trianglesR)
+	Hemisphere(L, surfL, mwL; triangles = trianglesL), 
+	Hemisphere(R, surfR, mwR; triangles = trianglesR)
 )
 nverts_mw = sum(mwL) + sum(mwR)
 nverts_surface = size(surfL, 1) + size(surfR, 1) - nverts_mw

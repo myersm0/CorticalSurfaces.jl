@@ -6,7 +6,7 @@ Make a `Hemisphere` from a `Matrix` of xyz coordinates and a `BitVector`
 denoting medial wall membership
 """
 function Hemisphere(
-		coords::Matrix, medial_wall::Union{Vector{Bool}, BitVector}; 
+		label::BrainStructure, coords::Matrix, medial_wall::Union{Vector{Bool}, BitVector}; 
 		triangles::Union{Nothing, Matrix} = nothing
 	)
 	nvertices = length(medial_wall)
@@ -38,6 +38,7 @@ function Hemisphere(
 	temp[surf_inds] .= 1:length(surf_inds)
 
 	return Hemisphere(
+		label = label,
 		coordinates = coordinates, 
 		triangles = triangles,
 		medial_wall = convert(BitVector, medial_wall),
@@ -81,6 +82,9 @@ end
 Make a `CorticalSurface` from a left and a right `Hemisphere`, in that order
 """
 function CorticalSurface(lhem::Hemisphere, rhem::Hemisphere)
+	brainstructure(lhem) == L && brainstructure(rhem) == R || 
+		error("You must supply a left and a right Hemisphere, in that order")
+
 	lhem.vertices[(Bilateral(), Exclusive())] = 
 		lhem.vertices[(Ipsilateral(), Exclusive())]
 	lhem.vertices[(Bilateral(), Inclusive())] = 

@@ -1,4 +1,8 @@
 
+brainstructure(h::Hemisphere) = h.label
+
+brainstructure(c::CorticalSurface) = LR
+
 """
     getindex(c, h)
 
