@@ -21,7 +21,7 @@ export SurfaceSpace, Hemisphere, CorticalSurface
 include("constructors.jl")
 
 include("accessors.jl")
-export size, getindex, coordinates, vertices, medial_wall, keys, haskey
+export size, getindex, coordinates, vertices, medial_wall, keys, haskey, brainstructure
 
 include("mutators.jl")
 export setindex!
