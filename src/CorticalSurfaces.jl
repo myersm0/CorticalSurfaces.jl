@@ -10,15 +10,33 @@ const AdjacencyMatrix = AbstractMatrix{Bool}
 const DistanceMatrix = AbstractMatrix{T} where T <: Real
 
 include("traits.jl")
+export HemisphericIndexing, Ipsilateral, Bilateral
+export MedialWallIndexing, Exclusive, Inclusive
+export IndexMapping, CollapseMW, ExpandMW
+
 include("types.jl")
+export SurfaceSpace, Hemisphere, CorticalSurface
+
 include("constructors.jl")
+
 include("accessors.jl")
+export size, getindex, coordinates, vertices, medial_wall, keys, haskey
+
 include("mutators.jl")
+export setindex!
+
 include("index_ops.jl")
+export expand, collapse, pad, trim
+
 include("macros.jl")
+export @collapse
+
 include("show.jl")
+
 include("conversion.jl")
+
 include("adjacency.jl")
+export make_adjacency_matrix, make_adjacency_list
 
 end
 

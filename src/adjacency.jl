@@ -1,6 +1,4 @@
 
-export make_adjacency_matrix, make_adjacency_list
-
 """
 	 make_adjacency_matrix(neighbors)
 

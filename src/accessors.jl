@@ -1,6 +1,4 @@
 
-export size, getindex, coordinates, vertices, medial_wall, keys, haskey
-
 """
     getindex(c, h)
 

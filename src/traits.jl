@@ -1,8 +1,4 @@
 
-export HemisphericIndexing, Ipsilateral, Bilateral
-export MedialWallIndexing, Exclusive, Inclusive
-export IndexMapping, CollapseMW, ExpandMW
-
 # ===== traits concerning indexing options =====
 abstract type IndexingStyle end
 

@@ -1,6 +1,4 @@
 
-export setindex!
-
 function Base.setindex!(hem::Hemisphere, what::T, k::Symbol) where T <: AbstractArray
 	check_size(hem, what, Inclusive()) || error(DimensionMismatch)
 	hem.appendix[k] = SpatialData(what, hem, Inclusive())

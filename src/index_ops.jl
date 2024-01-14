@@ -1,6 +1,4 @@
 
-export expand, collapse, pad, trim
-
 """
     expand(inds, surface)
 

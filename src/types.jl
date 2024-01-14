@@ -1,6 +1,4 @@
 
-export SurfaceSpace, Hemisphere, CorticalSurface
-
 struct SpatialData{T, N}
 	data::Dict{MedialWallIndexing, T′} where T′ <: AbstractArray{T, N}
 end
