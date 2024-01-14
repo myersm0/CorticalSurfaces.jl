@@ -7,13 +7,15 @@ and contains a `Vector{Int}` listing that vertex's neighbors -- of length `nvert
 construct a `SparseMatrixCSC` adjacency matrix
 """
 function make_adjacency_matrix(neighbors::AdjacencyList)
-	nvertices = length(neighbors)
-	A = spzeros(Bool, nvertices, nvertices)
-	for v in 1:nvertices
-		A[v, v] = true
-		A[v, neighbors[v]] .= true
-	end
-	return A
+	n = length(neighbors)
+	I_diag = 1:n
+	J_diag = 1:n
+	I_neigh = vcat(neighbors...)
+	J_neigh = vcat([repeat([v], length(neighbors[v])) for v in 1:n]...)
+	I = [I_diag; I_neigh]
+	J = [J_diag; J_neigh]
+	V = trues(length(I))
+	return sparse(I, J, V)
 end
 
 """
@@ -23,7 +25,11 @@ Make an adjacency matrix from the adjacency list `:neighbors` contained in `hem`
 """
 function make_adjacency_matrix(hem::Hemisphere)
 	haskey(hem.appendix, :neighbors) || error("Hemisphere must contain :neighbors")
-	make_adjacency_matrix(hem[:neighbors])
+	return make_adjacency_matrix(hem[:neighbors])
+end
+
+function make_adjacency_matrix!(hem::Hemisphere)
+	hem[:A] = make_adjacency_matrix(hem)
 end
 
 """
@@ -55,6 +61,28 @@ Make an adjacency list based on the `triangles` field of `hem::Hemisphere`
 function make_adjacency_list(hem::Hemisphere)
 	!isnothing(hem.triangles) || error("Hemisphere's `triangles` field cannot be empty")
 	make_adjacency_list(hem, hem.triangles)
+end
+
+function make_adjacency_list!(hem::Hemisphere)
+	hem[:neighbors] = make_adjacency_list(hem)
+end
+
+function adjacency_list(hem::Hemisphere)
+	haskey(hem, :neighbors) || make_adjacency_list!(hem)
+	return hem[:neighbors]
+end
+
+function adjacency_matrix(hem::Hemisphere)
+	haskey(hem, :A) || make_adjacency_matrix!(hem)
+	return hem[:A]
+end
+
+function adjacency_list(c::CorticalSurface)
+	return c[:neighbors]
+end
+	
+function adjacency_matrix(c::CorticalSurface)
+	return c[:A]
 end
 
 
