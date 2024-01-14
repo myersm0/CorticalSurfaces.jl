@@ -37,6 +37,8 @@ include("conversion.jl")
 
 include("adjacency.jl")
 export make_adjacency_matrix, make_adjacency_list
+export make_adjacency_matrix!, make_adjacency_list!
+export adjacency_matrix, adjacency_list
 
 end
 
