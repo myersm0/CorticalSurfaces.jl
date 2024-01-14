@@ -11,7 +11,7 @@ using Pkg.Artifacts
 # xyz coordinates and medial wall information (nonsensical in this case)
 coords = randn(32492, 3)
 mw = rand(Bool, 32492)
-hem = Hemisphere(coords, mw)
+hem = Hemisphere(L, coords, mw)
 
 # now to create a meaningful Hemisphere struct from real data, we'll first
 # load in some spatial data to use:
@@ -27,6 +27,7 @@ MSC01 = load(MSC01_file)
 hems = Dict(
 	hem => 
 		Hemisphere(
+			hem,
 			MSC01["pointsets"]["midthickness"][hem],
 			MSC01["medial wall"][hem];
 			triangles = MSC01["triangle"][hem]
