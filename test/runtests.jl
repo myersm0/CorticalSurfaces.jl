@@ -2,8 +2,9 @@ using CorticalSurfaces
 using CIFTI
 using Test
 using JLD
+using Pkg.Artifacts
 
-data_dir = joinpath(dirname(@__FILE__), "..", "data")
+data_dir = artifact"CIFTI_test_files"
 
 # load MSC01 32k fs LR files and generate some ground truth info
 MSC01_file = joinpath(data_dir, "MSC01.jld")
