@@ -30,6 +30,7 @@ end
 
 function make_adjacency_matrix!(hem::Hemisphere)
 	hem[:A] = make_adjacency_matrix(hem)
+	return nothing
 end
 
 """
@@ -65,6 +66,17 @@ end
 
 function make_adjacency_list!(hem::Hemisphere)
 	hem[:neighbors] = make_adjacency_list(hem)
+	return nothing
+end
+
+function make_adjacency_list!(c::CorticalSurface)
+	make_adjacency_list!(c[L])
+	make_adjacency_list!(c[R])
+end
+
+function make_adjacency_matrix!(c::CorticalSurface)
+	make_adjacency_matrix!(c[L])
+	make_adjacency_matrix!(c[R])
 end
 
 function adjacency_list(hem::Hemisphere)
