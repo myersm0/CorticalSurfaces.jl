@@ -135,4 +135,34 @@ Check whether a `CorticalSurface` has the symbol `k` among its supplementary spa
 """
 Base.haskey(c::CorticalSurface, k::Symbol) = k in keys(c)
 
+"""
+    matches_topology(c1, c2)
+
+Check whether `SurfaceSpace`s `c1` and `c2` share the same vertex space, medial
+wall definition, and topology.
+"""
+function matches_topology(c1::SurfaceSpace, c2::SurfaceSpace)
+	return false
+end
+
+function matches_topology(c1::CorticalSurface, c2::CorticalSurface)
+	size(c1) == size(c2) || return false
+	medial_wall(c1) == medial_wall(c2) || return false
+	for hem in LR
+		(!isnothing(c1[hem].triangles) && !isnothing(c2[hem].triangles)) ||
+			error("Can't compare topology unless both surfaces have `triangles` defined")
+		c1[hem].triangles == c2[hem].triangles || return false
+	end
+	return true
+end
+
+function matches_topology(c1::Hemisphere, c2::Hemisphere)
+	size(c1) == size(c2) || return false
+	medial_wall(c1) == medial_wall(c2) || return false
+	(!isnothing(c1.triangles) && !isnothing(c2.triangles)) ||
+		error("Can't compare topology unless both surfaces have `triangles` defined")
+	c1.triangles == c2.triangles || return false
+	return true
+end
+
 
