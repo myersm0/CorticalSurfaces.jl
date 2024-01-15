@@ -58,10 +58,10 @@ end
 
 Make a meaningless, but functional, placeholder `Hemisphere` of a certain size
 """
-function Hemisphere(nvertices::Int)
+function Hemisphere(label::BrainStructure, nvertices::Int)
 	coords = zeros(3, nvertices)
 	medial_wall = falses(nvertices)
-	return Hemisphere(coords, medial_wall)
+	return Hemisphere(label, coords, medial_wall)
 end
 
 """
@@ -70,10 +70,10 @@ end
 Make a placeholder `Hemisphere` struct, without meaningful coordinates,
 from just a `BitVector` representing medial wall membership
 """
-function Hemisphere(medial_wall::BitVector)
+function Hemisphere(label::BrainStructure, medial_wall::BitVector)
 	nvertices = length(medial_wall)
 	coords = zeros(3, nvertices)
-	return Hemisphere(coords, medial_wall)
+	return Hemisphere(label, coords, medial_wall)
 end
 
 """
