@@ -1,6 +1,7 @@
 
 function Base.show(io::IO, ::MIME"text/plain", h::Hemisphere)
-	print("Hemisphere with $(size(h)) vertices ($(size(h, Exclusive())) without medial wall)")
+	print("Hemisphere ($(brainstructure(h))) with $(size(h)) vertices ")
+	print("$(size(h, Exclusive())) without medial wall)")
 end
 
 function Base.show(io::IO, ::MIME"text/plain", c::CorticalSurface)
