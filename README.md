@@ -24,7 +24,8 @@ Pkg.add("CorticalSurfaces")
 A demo of the basic functionality is provided in `examples/demo.jl`, but see below for the main points.
 
 ### Constructors
-To create a Hemisphere struct that will encapsulate spatial information, two pieces of information are required: 
+To create a Hemisphere struct that will encapsulate spatial information, three pieces of information are required: 
+- a `BrainStructure` label denoting which hemisphere is represented, either `CORTEX_LEFT` or `CORTEX_RIGHT` (or `L` and `R` for short)
 - a numeric `Matrix` of coordinates having 3 rows (x, y, z) and a number of columns equaling the number of vertices
 - a `BitVector`, the length of which is equal to the number of columns in the coordinate `Matrix`, indicating the presence of the medial wall (`true` if the vertex is part of the medial wall, `false` otherwise)
 
@@ -33,9 +34,9 @@ For example, to create two hemispheres (with nonsensical coordinate and medial w
 nverts = 32492
 surf = zeros(3, nverts)
 mw = rand(Bool, nverts)
-hemL = Hemisphere(surf, mw)
+hemL = Hemisphere(CORTEX_LEFT, surf, mw)
 mw = rand(Bool, nverts)
-hemR = Hemisphere(surf, mw)
+hemR = Hemisphere(CORTEX_RIGHT, surf, mw)
 ```
 
 And now to construct a CorticalSurface struct from the above:

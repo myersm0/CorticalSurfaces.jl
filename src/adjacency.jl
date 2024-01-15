@@ -24,7 +24,7 @@ end
 Make an adjacency matrix from the adjacency list `:neighbors` contained in `hem`
 """
 function make_adjacency_matrix(hem::Hemisphere)
-	haskey(hem.appendix, :neighbors) || error("Hemisphere must contain :neighbors")
+	haskey(hem.appendix, :neighbors) || make_adjacency_list!(hem)
 	return make_adjacency_matrix(hem[:neighbors])
 end
 
