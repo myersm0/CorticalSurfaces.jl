@@ -4,7 +4,6 @@ module CorticalSurfaces
 using CIFTI
 using Chain
 using SparseArrays
-import Graphs
 
 const AdjacencyList = Vector{Vector{T}} where T <: Integer
 const AdjacencyMatrix = AbstractMatrix{Bool}

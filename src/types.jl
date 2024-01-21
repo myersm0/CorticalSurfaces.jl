@@ -11,7 +11,6 @@ abstract type SurfaceSpace end
 	medial_wall::BitVector
 	vertices::Dict{IndexMapping, Vector{Int}}
 	triangles::Union{Nothing, Matrix{Int}}
-	graph::Ref{Union{Nothing, Graphs.SimpleGraph{Int}}} = nothing
 	size::Dict{MedialWallIndexing, Int} = Dict(
 		Exclusive() => sum(.!medial_wall),
 		Inclusive() => length(medial_wall)

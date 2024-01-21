@@ -7,14 +7,12 @@ version = "0.8.0"
 CIFTI = "8026ff91-9e86-4f19-bd27-c139e9e8bf7a"
 Chain = "8be319e6-bccf-4806-a6f7-6fae938471bc"
 GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
-Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 CIFTI = "1"
 Chain = "0.5"
 GeometryBasics = "0.4.9"
-Graphs = "1.9"
 julia = "1.9"
 
 [extras]
