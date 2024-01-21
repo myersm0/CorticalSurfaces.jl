@@ -20,12 +20,34 @@ end
 """
     pad(x, surface)
 
-Grow `x` to `size(surface, Inclusive())` by padding it with zeros along the medial wall
+Grow real-valued vector `x` to `size(surface, Inclusive())` by padding it with 
+NaNs along the medial wall
 """
-function pad(x::Union{AbstractRange, AbstractVector}, surface::SurfaceSpace)
+function pad(
+		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace
+	) where T <: AbstractFloat
 	length(x) == size(surface, Exclusive()) || 
 		error("Input length must match the size of the surface, exclusive of medial wall")
-	out = zeros(eltype(x), size(surface, Inclusive()))
+	sentinel = NaN
+	out = fill(eltype(x)(sentinel), size(surface, Inclusive()))
+	verts = expand(1:length(x), surface)
+	out[verts] .= x
+	return out
+end
+
+"""
+    pad(x, surface; sentinel)
+
+Grow `x` to `size(surface, Inclusive())` by padding it with a provided sentinel value
+along the medial wall
+"""
+function pad(
+		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
+		sentinel::T
+	) where T
+	length(x) == size(surface, Exclusive()) || 
+		error("Input length must match the size of the surface, exclusive of medial wall")
+	out = fill(eltype(x)(sentinel), size(surface, Inclusive()))
 	verts = expand(1:length(x), surface)
 	out[verts] .= x
 	return out

@@ -78,8 +78,13 @@ nverts_total = nverts_mw + nverts_surface
 		@test maximum(temp_inds) == size(c[hem], Inclusive())
 		@test length(unique(temp_inds)) == length(temp_inds)
 
-		sample_data = collect(1:size(c[hem], Exclusive()))
+		sample_data = randn(size(c[hem], Exclusive()))
 		padded_data = pad(sample_data, c[hem])
+		trimmed_padded_data = trim(padded_data, c[hem])
+		@test trimmed_padded_data == sample_data
+
+		sample_data = collect(1:size(c[hem], Exclusive()))
+		padded_data = pad(sample_data, c[hem]; sentinel = -1)
 		trimmed_padded_data = trim(padded_data, c[hem])
 		@test trimmed_padded_data == sample_data
 	end
@@ -94,7 +99,7 @@ nverts_total = nverts_mw + nverts_surface
 	@test maximum(temp_inds) == size(c, Exclusive())
 	@test length(unique(temp_inds)) == length(temp_inds)
 
-	temp_inds = pad(1:59412, c)
+	temp_inds = pad(1:59412, c; sentinel = 0)
 	@test length(temp_inds) == size(c)
 	@test sum(temp_inds .== 0) == sum(medial_wall(c))
 	@test setdiff(temp_inds, 0) == 1:59412
