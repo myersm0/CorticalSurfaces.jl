@@ -40,9 +40,6 @@ include("adjacency.jl")
 export initialize_adjacency_matrix!, initialize_adjacency_list!, initialize_adjacencies!
 export adjacency_matrix, adjacency_list
 
-include("graphs.jl")
-export graph, initialize_graph!
-
 end
 
 

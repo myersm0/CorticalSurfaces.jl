@@ -140,6 +140,8 @@ Get vertex numbers from a `SurfaceSpace` struct, inclusive of medial wall.
 """
 vertices(s::SurfaceSpace) = vertices(s, Inclusive())
 
+vertices(h::Hemisphere) = vertices(h, Inclusive())
+
 """
     vertices(s, mw)
 
