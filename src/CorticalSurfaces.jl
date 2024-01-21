@@ -37,7 +37,7 @@ include("show.jl")
 include("conversion.jl")
 
 include("adjacency.jl")
-export make_adjacency_matrix!, make_adjacency_list!
+export initialize_adjacency_matrix!, initialize_adjacency_list!, initialize_adjacencies!
 export adjacency_matrix, adjacency_list
 
 include("graphs.jl")

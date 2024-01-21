@@ -1,11 +1,10 @@
 
 function make_graph(c::SurfaceSpace)
-	make_adjacency_list!(c)
-	make_adjacency_matrix!(c)
 	return Graphs.Graph(adjacency_matrix(c))
 end
 
 function initialize_graph!(h::Hemisphere)
+	initialize_adjacencies!(c)
 	isnothing(h.graph[]) && (h.graph[] = make_graph(h))
 	return
 end

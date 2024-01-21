@@ -109,13 +109,13 @@ nverts_total = nverts_mw + nverts_surface
 end
 
 @testset "adjacency tests" begin
-	make_adjacency_list!(c[L])
-	make_adjacency_list!(c[R])
+	initialize_adjacency_list!(c[L])
+	initialize_adjacency_list!(c[R])
 	@test adjacency_list(c[L]) == adjacency_list(c[R]) == [sort(x) for x in neighbors]
 	@test size(c[:neighbors], 1) == size(neighbors, 1) * 2
 	@test size(c[:neighbors, Exclusive()], 1) == size(c, Exclusive())
-	make_adjacency_matrix!(c[L])
-	make_adjacency_matrix!(c[R])
+	initialize_adjacency_matrix!(c[L])
+	initialize_adjacency_matrix!(c[R])
 	@test allequal([size(c[:A])..., size(c)])
 	@test allequal([size(c[:A, Exclusive()])..., size(c, Exclusive())])
 end

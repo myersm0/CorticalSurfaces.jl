@@ -28,7 +28,7 @@ function make_adjacency_matrix(hem::Hemisphere)
 	return make_adjacency_matrix(hem[:neighbors])
 end
 
-function make_adjacency_matrix!(hem::Hemisphere)
+function initialize_adjacency_matrix!(hem::Hemisphere)
 	haskey(hem, :A) && return
 	hem[:A] = make_adjacency_matrix(hem)
 	return
@@ -62,39 +62,49 @@ Make an adjacency list based on the `triangles` field of `hem::Hemisphere`
 """
 function make_adjacency_list(hem::Hemisphere)
 	!isnothing(hem.triangles) || error("Hemisphere's `triangles` field cannot be empty")
-	make_adjacency_list(hem, hem.triangles)
+	return make_adjacency_list(hem, hem.triangles)
 end
 
-function make_adjacency_list!(hem::Hemisphere)
+function initialize_adjacency_list!(hem::Hemisphere)
 	haskey(hem, :neighbors) && return
 	hem[:neighbors] = make_adjacency_list(hem)
-	return
+	return nothing
 end
 
-function make_adjacency_list!(c::CorticalSurface)
-	make_adjacency_list!(c[L])
-	make_adjacency_list!(c[R])
+function initialize_adjacency_list!(c::CorticalSurface)
+	for hem in LR
+		initialize_adjacency_list!(c[hem])
+	end
+	return nothing
 end
 
-function make_adjacency_matrix!(c::CorticalSurface)
-	make_adjacency_matrix!(c[L])
-	make_adjacency_matrix!(c[R])
+function initialize_adjacency_matrix!(c::CorticalSurface)
+	for hem in LR
+		initialize_adjacency_matrix!(c[hem])
+	end
+	return nothing
 end
 
-function adjacency_list(hem::Hemisphere)
-	return hem[:neighbors]
+function initialize_adjacencies!(s::SurfaceSpace)
+	initialize_adjacency_list!(s)
+	initialize_adjacency_matrix!(s)
+	return nothing
 end
 
-function adjacency_matrix(hem::Hemisphere)
-	return hem[:A]
+function adjacency_list(hem::Hemisphere, args...)
+	return hem[:neighbors, args...]
 end
 
-function adjacency_list(c::CorticalSurface)
-	return c[:neighbors]
+function adjacency_matrix(hem::Hemisphere, args...)
+	return hem[:A, args...]
+end
+
+function adjacency_list(c::CorticalSurface, args...)
+	return c[:neighbors, args...]
 end
 	
-function adjacency_matrix(c::CorticalSurface)
-	return c[:A]
+function adjacency_matrix(c::CorticalSurface, args...)
+	return c[:A, args...]
 end
 
 
