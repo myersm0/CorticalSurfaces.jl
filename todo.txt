@@ -1,3 +1,5 @@
-- see if I can improve performance with views
-- add support for c[LR], c[[R, L]]
-- add medial wall accessors
+- add Exclusive() etc traits for adjacency accessors
+- be consistent in error-handling (throw(error()) vs error())
+
+
+
