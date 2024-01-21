@@ -12,7 +12,6 @@ const DistanceMatrix = AbstractMatrix{T} where T <: Real
 include("traits.jl")
 export HemisphericIndexing, Ipsilateral, Bilateral
 export MedialWallIndexing, Exclusive, Inclusive
-export IndexMapping, CollapseMW, ExpandMW
 
 include("types.jl")
 export SurfaceSpace, Hemisphere, CorticalSurface
