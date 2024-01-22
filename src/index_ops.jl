@@ -38,8 +38,8 @@ end
 """
     pad(x, surface; sentinel)
 
-Grow `x` to `size(surface, Inclusive())` by padding it with a provided sentinel value
-along the medial wall
+Grow `x` to `size(surface, Inclusive())` by padding it with a provided `sentinel` value
+along the medial wall.
 """
 function pad(
 		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
@@ -53,6 +53,19 @@ function pad(
 	return out
 end
 
+function pad(
+		mat::Matrix{T}, surface::SurfaceSpace; 
+		sentinel::T = T <: AbstractFloat ? NaN : zero(T)
+	) where T
+	all(size(mat) .== size(surface, Exclusive())) || 
+		error("Matrix must be square and match size of the surface, exclusive of medial wall")
+	n = size(surface, Inclusive())
+	out = fill(sentinel, n, n)
+	inds = .!medial_wall(surface)
+	out[inds, inds] .= mat
+	return out
+end
+
 """
     trim(x, surface)
 
@@ -63,4 +76,10 @@ function trim(x::Union{AbstractRange, Vector}, surface::SurfaceSpace)
 		error("Input length must match the size of the surface, inclusive of medial wall")
 	return x[vertices(surface, Exclusive())]
 end
+
+function trim(mat::Matrix, surface::SurfaceSpace)
+	inds = .!medial_wall(surface)
+	return mat[inds, inds]
+end
+
 
