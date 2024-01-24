@@ -23,15 +23,14 @@ c = CorticalSurface(
 	Hemisphere(L, surfL, mwL; triangles = trianglesL), 
 	Hemisphere(R, surfR, mwR; triangles = trianglesR)
 )
-nverts_mw = sum(mwL) + sum(mwR)
-nverts_surface = size(surfL, 1) + size(surfR, 1) - nverts_mw
-nverts_total = nverts_mw + nverts_surface
 
 @testset "CorticalSurfaces.jl" begin
+	nverts_mw = sum(mwL) + sum(mwR)
+	nverts_surface = size(surfL, 1) + size(surfR, 1) - nverts_mw
+	nverts_total = nverts_mw + nverts_surface
 	@test size(c, Exclusive()) == nverts_surface
 	@test size(c, Inclusive()) == nverts_total
 	@test nverts_total == nverts_surface + sum(medial_wall(c))
-
 	@test size(coordinates(c, Inclusive()), 2) == nverts_total
 	@test size(coordinates(c, Exclusive()), 2) == nverts_surface
 

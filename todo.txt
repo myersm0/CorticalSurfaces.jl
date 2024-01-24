@@ -1,5 +1,6 @@
 - add Exclusive() etc traits for adjacency accessors
 - be consistent in error-handling (throw(error()) vs error())
+- use IOContext for show methods
 
 
 
