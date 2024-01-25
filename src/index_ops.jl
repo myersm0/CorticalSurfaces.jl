@@ -38,7 +38,7 @@ end
 
 function pad(
 		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
-		sentinel::T = zero(T)
+		sentinel = zero(T)
 	) where T
 	length(x) == size(surface, Exclusive()) || 
 		error("Input length must match the size of the surface, exclusive of medial wall")
@@ -50,12 +50,12 @@ end
 
 function pad(
 		mat::Matrix{T}, surface::SurfaceSpace; 
-		sentinel::T = NaN
+		sentinel = NaN
 	) where T <: AbstractFloat
 	all(size(mat) .== size(surface, Exclusive())) || 
 		error("Matrix must be square and match size of the surface, exclusive of medial wall")
 	n = size(surface, Inclusive())
-	out = fill(sentinel, n, n)
+	out = fill(eltype(mat)(sentinel), n, n)
 	inds = .!medial_wall(surface)
 	out[inds, inds] .= mat
 	return out
