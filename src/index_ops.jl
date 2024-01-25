@@ -26,7 +26,19 @@ by default `NaN` will be used if `T <: AbstractFloat`, or `zero(T)` otherwise.
 """
 function pad(
 		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
-		sentinel::T = T <: AbstractFloat ? NaN : zero(T)
+		sentinel::T = NaN
+	) where T <: AbstractFloat
+	length(x) == size(surface, Exclusive()) || 
+		error("Input length must match the size of the surface, exclusive of medial wall")
+	out = fill(eltype(x)(sentinel), size(surface, Inclusive()))
+	verts = expand(1:length(x), surface)
+	out[verts] .= x
+	return out
+end
+
+function pad(
+		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
+		sentinel::T = zero(T)
 	) where T
 	length(x) == size(surface, Exclusive()) || 
 		error("Input length must match the size of the surface, exclusive of medial wall")
@@ -38,7 +50,20 @@ end
 
 function pad(
 		mat::Matrix{T}, surface::SurfaceSpace; 
-		sentinel::T = T <: AbstractFloat ? NaN : zero(T)
+		sentinel::T = NaN
+	) where T <: AbstractFloat
+	all(size(mat) .== size(surface, Exclusive())) || 
+		error("Matrix must be square and match size of the surface, exclusive of medial wall")
+	n = size(surface, Inclusive())
+	out = fill(sentinel, n, n)
+	inds = .!medial_wall(surface)
+	out[inds, inds] .= mat
+	return out
+end
+
+function pad(
+		mat::Matrix{T}, surface::SurfaceSpace; 
+		sentinel::T = zero(T)
 	) where T
 	all(size(mat) .== size(surface, Exclusive())) || 
 		error("Matrix must be square and match size of the surface, exclusive of medial wall")
