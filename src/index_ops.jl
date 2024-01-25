@@ -18,32 +18,15 @@ function collapse(inds::Union{AbstractRange, Vector}, surface::SurfaceSpace)
 end
 
 """
-    pad(x, surface)
-
-Grow real-valued vector `x` to `size(surface, Inclusive())` by padding it with 
-NaNs along the medial wall
-"""
-function pad(
-		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace
-	) where T <: AbstractFloat
-	length(x) == size(surface, Exclusive()) || 
-		error("Input length must match the size of the surface, exclusive of medial wall")
-	sentinel = NaN
-	out = fill(eltype(x)(sentinel), size(surface, Inclusive()))
-	verts = expand(1:length(x), surface)
-	out[verts] .= x
-	return out
-end
-
-"""
     pad(x, surface; sentinel)
 
-Grow `x` to `size(surface, Inclusive())` by padding it with a provided `sentinel` value
-along the medial wall.
+Grow vector `x` to `size(surface, Inclusive())` by padding it with a provided 
+`sentinel` value along the medial wall. If no sentinel value is specified, then
+by default `NaN` will be used if `T <: AbstractFloat`, or `zero(T)` otherwise.
 """
 function pad(
 		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
-		sentinel::T
+		sentinel::T = T <: AbstractFloat ? NaN : zero(T)
 	) where T
 	length(x) == size(surface, Exclusive()) || 
 		error("Input length must match the size of the surface, exclusive of medial wall")
