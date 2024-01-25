@@ -98,6 +98,11 @@ c = CorticalSurface(
 	@test maximum(temp_inds) == size(c, Exclusive())
 	@test length(unique(temp_inds)) == length(temp_inds)
 
+	temp_inds = pad(1:59412, c)
+	@test length(temp_inds) == size(c)
+	@test sum(temp_inds .== 0) == sum(medial_wall(c))
+	@test setdiff(temp_inds, 0) == 1:59412
+
 	temp_inds = pad(1:59412, c; sentinel = 0)
 	@test length(temp_inds) == size(c)
 	@test sum(temp_inds .== 0) == sum(medial_wall(c))
