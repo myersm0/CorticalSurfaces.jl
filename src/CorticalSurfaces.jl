@@ -2,7 +2,6 @@
 module CorticalSurfaces
 
 using CIFTI
-using Chain
 using SparseArrays
 
 const AdjacencyList = Vector{Vector{T}} where T <: Integer
