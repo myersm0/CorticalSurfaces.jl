@@ -44,13 +44,8 @@ function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
 	nvertices = size(hem)
 	out = AdjacencyList{Int}(undef, nvertices)
 	Threads.@threads for v in 1:nvertices
-		out[v] =
-			@chain triangles begin
-				filter(x -> v in x, eachcol(_))
-				union(_...)
-				setdiff(_, v)
-				sort
-			end
+		# todo: find something nicer for this
+		out[v] = setdiff(union(filter(x -> v in x, eachcol(triangles))...), v) |> sort
 	end
 	return out
 end
