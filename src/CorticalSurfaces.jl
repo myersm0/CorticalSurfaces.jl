@@ -31,8 +31,6 @@ export @collapse
 
 include("show.jl")
 
-include("conversion.jl")
-
 include("adjacency.jl")
 export initialize_adjacency_matrix!, initialize_adjacency_list!, initialize_adjacencies!
 export make_adjacency_matrix, make_adjacency_list

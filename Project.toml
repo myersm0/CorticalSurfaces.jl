@@ -5,12 +5,10 @@ version = "0.10"
 
 [deps]
 CIFTI = "8026ff91-9e86-4f19-bd27-c139e9e8bf7a"
-GeometryBasics = "5c1252a2-5f33-56bf-86c9-59e7332b4326"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 CIFTI = "2"
-GeometryBasics = "0.4.9"
 julia = "1.9"
 
 [extras]
