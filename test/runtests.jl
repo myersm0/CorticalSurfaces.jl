@@ -83,7 +83,7 @@ c = CorticalSurface(
 		@test trimmed_padded_data == sample_data
 
 		sample_data = collect(1:size(c[hem], Exclusive()))
-		padded_data = pad(sample_data, c[hem]; sentinel = -1)
+		padded_data = pad(sample_data, c[hem], -1)
 		trimmed_padded_data = trim(padded_data, c[hem])
 		@test trimmed_padded_data == sample_data
 	end
@@ -103,7 +103,7 @@ c = CorticalSurface(
 	@test sum(temp_inds .== 0) == sum(medial_wall(c))
 	@test setdiff(temp_inds, 0) == 1:59412
 
-	temp_inds = pad(1:59412, c; sentinel = 0)
+	temp_inds = pad(1:59412, c, 0)
 	@test length(temp_inds) == size(c)
 	@test sum(temp_inds .== 0) == sum(medial_wall(c))
 	@test setdiff(temp_inds, 0) == 1:59412
