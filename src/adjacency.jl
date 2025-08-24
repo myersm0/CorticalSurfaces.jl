@@ -39,7 +39,7 @@ end
 
 Make an adjacency list from a 3-column matrix of triangle vertices
 """
-function make_adjacency_list(hem::Hemisphere, triangles::Matrix)
+function make_adjacency_list(hem::Hemisphere, triangles::AbstractMatrix)
 	size(triangles, 1) == 3 || error("Expected a 3-row matrix of triangle vertices")
 	nvertices = size(hem)
 	out = AdjacencyList{Int}(undef, nvertices)

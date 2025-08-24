@@ -85,10 +85,10 @@ function Base.cat(::IsSquare, a::SparseMatrixCSC, b::SparseMatrixCSC)
 	]
 end
 
-Base.cat(::IsScalarList, a::Vector, b::Vector) = 
+Base.cat(::IsScalarList, a::AbstractVector, b::AbstractVector) = 
 	return [a; b]
 
-Base.cat(::IsNestedList, a::Vector, b::Vector) =
+Base.cat(::IsNestedList, a::AbstractVector, b::AbstractVector) =
 	return [a; [x .+ size(a, 1) for x in b]]
 
 
@@ -129,7 +129,7 @@ Each column of the output represents a vertex, and the rows represent x, y, and 
 coordinates(s::SurfaceSpace, mw::MedialWallIndexing) = s.coordinates[mw]
 
 "Get coordinates from a Vector of Hemispheres"
-coordinates(v::Vector{Hemisphere}, args...) = 
+coordinates(v::AbstractVector{Hemisphere}, args...) = 
 	hcat([coordinates(h, args...) for h in v]...)
 
 

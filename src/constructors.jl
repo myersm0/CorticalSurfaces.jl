@@ -6,8 +6,8 @@ Make a `Hemisphere` from a `Matrix` of xyz coordinates and a `BitVector`
 denoting medial wall membership
 """
 function Hemisphere(
-		label::BrainStructure, coords::Matrix, medial_wall::Union{Vector{Bool}, BitVector}; 
-		triangles::Union{Nothing, Matrix} = nothing
+		label::BrainStructure, coords::AbstractMatrix, medial_wall::AbstractVector{Bool};
+		triangles::Union{Nothing, AbstractMatrix} = nothing
 	)
 	nvertices = length(medial_wall)
 
@@ -58,7 +58,7 @@ end
 
 Make a meaningless, but functional, placeholder `Hemisphere` of a certain size
 """
-function Hemisphere(label::BrainStructure, nvertices::Int)
+function Hemisphere(label::BrainStructure, nvertices::Integer)
 	coords = zeros(3, nvertices)
 	medial_wall = falses(nvertices)
 	return Hemisphere(label, coords, medial_wall)
@@ -70,7 +70,7 @@ end
 Make a placeholder `Hemisphere` struct, without meaningful coordinates,
 from just a `BitVector` representing medial wall membership
 """
-function Hemisphere(label::BrainStructure, medial_wall::BitVector)
+function Hemisphere(label::BrainStructure, medial_wall::AbstractVector{Bool})
 	nvertices = length(medial_wall)
 	coords = zeros(3, nvertices)
 	return Hemisphere(label, coords, medial_wall)
