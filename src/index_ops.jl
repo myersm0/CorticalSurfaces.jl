@@ -1,93 +1,87 @@
 
 """
-    expand(inds, surface)
+	expand(inds, surface)
 
 Map a set of `Exclusive()` vertex indices to an expanded (`Inclusive()`) range
 """
-function expand(inds::Union{AbstractRange, Vector}, surface::SurfaceSpace)
+function expand(inds::AbstractVector, surface::SurfaceSpace)
 	return surface.remap[ExpandMW][inds]
 end
 
 """
-    collapse(inds, surface)
+	collapse(inds, surface)
 
 Map a set of `Inclusive()` vertex indices to a collapsed (`Exclusive()`) range
 """
-function collapse(inds::Union{AbstractRange, Vector}, surface::SurfaceSpace)
+function collapse(inds::AbstractVector, surface::SurfaceSpace)
 	return filter(x -> x != 0, surface.remap[CollapseMW][inds])
 end
 
 """
-    pad(x, surface; sentinel)
+	pad(x, surface, with)
 
-Grow vector `x` to `size(surface, Inclusive())` by padding it with a provided 
-`sentinel` value along the medial wall. If no sentinel value is specified, then
-by default `NaN` will be used if `T <: AbstractFloat`, or `zero(T)` otherwise.
+Grow array `x` by padding it with value `with` along the medial wall.
+
+For vectors: pads to `size(surface, Inclusive())`
+For matrices: pads to `size(surface, Inclusive()) × size(surface, Inclusive())`
 """
-function pad(
-		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace
-	) where T <: AbstractFloat
+function pad(x::AbstractArray, surface::SurfaceSpace, with) end
+
+# helper to determine default fill value
+default_with(::AbstractArray{T}) where T <: AbstractFloat = NaN
+default_with(::AbstractArray{T}) where T = zero(T)
+
+function pad(x::AbstractVector{T}, surface::SurfaceSpace, with) where T
 	length(x) == size(surface, Exclusive()) || 
-		error("Input length must match the size of the surface, exclusive of medial wall")
-	sentinel = NaN
-	out = fill(eltype(x)(sentinel), size(surface, Inclusive()))
+		error("Input length $(length(x)) must match surface exclusive size $(size(surface, Exclusive()))")
+		out = fill(T(with), size(surface, Inclusive()))
 	verts = expand(1:length(x), surface)
 	out[verts] .= x
 	return out
 end
 
-function pad(
-		x::Union{AbstractRange{T}, AbstractVector{T}}, surface::SurfaceSpace;
-		sentinel = zero(T)
-	) where T
-	length(x) == size(surface, Exclusive()) || 
-		error("Input length must match the size of the surface, exclusive of medial wall")
-	out = fill(eltype(x)(sentinel), size(surface, Inclusive()))
-	verts = expand(1:length(x), surface)
-	out[verts] .= x
+function pad(x::AbstractVector, surface::SurfaceSpace)
+	return pad(x, surface, default_with(x))
+end
+
+function pad(mat::AbstractMatrix{T}, surface::SurfaceSpace, with) where T
+	all(size(mat) .== size(surface, Exclusive())) || 
+		error("Matrix dimensions $(size(mat)) must match surface exclusive size $(size(surface, Exclusive()))")
+	m = n = size(surface, Inclusive())
+	out = fill(T(with), m, n)
+	indices = .!medial_wall(surface)
+	out[indices, indices] .= mat
 	return out
 end
 
-function pad(
-		mat::Matrix{T}, surface::SurfaceSpace; 
-		sentinel = NaN
-	) where T <: AbstractFloat
-	all(size(mat) .== size(surface, Exclusive())) || 
-		error("Matrix must be square and match size of the surface, exclusive of medial wall")
-	n = size(surface, Inclusive())
-	out = fill(eltype(mat)(sentinel), n, n)
-	inds = .!medial_wall(surface)
-	out[inds, inds] .= mat
-	return out
+function pad(mat::AbstractMatrix, surface::SurfaceSpace)
+	return pad(mat, surface, default_with(mat))
 end
 
-function pad(
-		mat::Matrix{T}, surface::SurfaceSpace; 
-		sentinel::T = zero(T)
-	) where T
-	all(size(mat) .== size(surface, Exclusive())) || 
-		error("Matrix must be square and match size of the surface, exclusive of medial wall")
-	n = size(surface, Inclusive())
-	out = fill(sentinel, n, n)
-	inds = .!medial_wall(surface)
-	out[inds, inds] .= mat
-	return out
+# backward compatibility with keyword argument
+function pad(x::AbstractArray, surface::SurfaceSpace; with = default_with(x))
+	return pad(x, surface, with)
 end
 
 """
-    trim(x, surface)
+	trim(x, surface)
 
-Shrink `x` to `size(surface, Exclusive())` by trimming out medial wall indices
+Shrink array `x` to exclusive size by removing medial wall positions.
+
+For vectors: returns elements at non-medial-wall positions
+For matrices: returns submatrix at non-medial-wall row/column positions
 """
-function trim(x::Union{AbstractRange, Vector}, surface::SurfaceSpace)
+function trim(x::AbstractArray, surface::SurfaceSpace) end
+
+function trim(x::AbstractVector, surface::SurfaceSpace)
 	length(x) == size(surface, Inclusive()) || 
-		error("Input length must match the size of the surface, inclusive of medial wall")
+		error("Input length $(length(x)) must match surface inclusive size $(size(surface, Inclusive()))")
 	return x[vertices(surface, Exclusive())]
 end
 
-function trim(mat::Matrix, surface::SurfaceSpace)
-	inds = .!medial_wall(surface)
-	return mat[inds, inds]
+function trim(mat::AbstractMatrix, surface::SurfaceSpace)
+	all(size(mat) .== size(surface, Inclusive())) ||
+		error("Matrix dimensions $(size(mat)) must match surface inclusive size $(size(surface, Inclusive()))")
+	indices = .!medial_wall(surface)
+	return mat[indices, indices]
 end
-
-
