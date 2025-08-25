@@ -5,15 +5,8 @@ This package provides an interface for improving safety and readability of manag
 
 This package supplies the backbone for a set of algorithms for operating on parcels on the cortical surface, [CorticalParcels.jl](https://github.com/myersm0/CorticalParcels.jl).
 
-**Update for v0.8**: In some applications it's helpful for a `Hemisphere` to know which `BrainStructure` it represents (`CORTEX_LEFT` or `CORTEX_RIGHT`, or `L` and `R` for short). This is now a required argument in constructors; see updated usage below and in `examples/demo.jl`.
-
 ## Performance and efficiency
-The implementation priorities are, in order:
-1. Correctness
-2. Speed of *indexing* into the spatial data (rather than of struct initialization)
-3. Convenience, readability in usage of this API
-
-Where each item is assumed to be far more important than the previous. Since in-memory storage cost of structural data such as this should be negligble, redundant representations of some data are present in order to speed up indexing.
+Speed of *indexing* into the spatial data (rather than of struct initialization) is a top priority. Since in-memory storage cost of structural data such as this should be negligble, redundant representations of some data are present in order to speed up indexing.
 
 ## Installation
 Within Julia:
